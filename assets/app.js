@@ -22,7 +22,21 @@
       const seeds = [
         { title: '東區消防警報', description: '住宅火警，請避開周邊道路', type: 'fire', severity: 'high', status: 'VerifiedWarned', lat: 24.7906, lng: 120.9975, likes: 23 },
         { title: '光復路車禍', description: '兩車追撞，外側車道回堵', type: 'traffic', severity: 'medium', status: 'Accepted', lat: 24.8021, lng: 120.9890, likes: 8 },
-        { title: '暴雨積水', description: '道路積水嚴重，請繞道通行', type: 'disaster', severity: 'high', status: 'VerifiedWarned', lat: 24.8150, lng: 120.9670, likes: 15 }
+        { title: '暴雨積水', description: '道路積水嚴重，請繞道通行', type: 'disaster', severity: 'high', status: 'VerifiedWarned', lat: 24.8150, lng: 120.9670, likes: 15 },
+        { title: '清大路口車禍', description: '機車與汽車擦撞，已處理完畢', type: 'traffic', severity: 'low', status: 'Resolved', lat: 24.7950, lng: 120.9950, likes: 5 },
+        { title: '路燈故障', description: '民生路路燈故障，已修復', type: 'other', severity: 'low', status: 'Resolved', lat: 24.8080, lng: 120.9800, likes: 3 },
+        { title: '路面坑洞', description: '中正路路面坑洞，已填補', type: 'other', severity: 'medium', status: 'Resolved', lat: 24.8000, lng: 120.9700, likes: 7 },
+        // 新增更多歷史紀錄
+        { title: '交大校門口車禍', description: '機車與行人擦撞，已處理完畢', type: 'traffic', severity: 'medium', status: 'Resolved', lat: 24.7865, lng: 120.9965, likes: 12 },
+        { title: '竹科園區火警', description: '辦公大樓火警，已撲滅', type: 'fire', severity: 'high', status: 'Resolved', lat: 24.7750, lng: 121.0100, likes: 18 },
+        { title: '東門圓環積水', description: '暴雨造成積水，已排除', type: 'disaster', severity: 'medium', status: 'Resolved', lat: 24.8050, lng: 120.9750, likes: 9 },
+        { title: '新竹火車站路燈故障', description: '站前路燈故障，已修復', type: 'other', severity: 'low', status: 'Resolved', lat: 24.8015, lng: 120.9715, likes: 4 },
+        { title: '香山區道路塌陷', description: '道路塌陷，已修復', type: 'other', severity: 'high', status: 'Resolved', lat: 24.7600, lng: 120.9200, likes: 14 },
+        { title: '南寮漁港車禍', description: '漁港附近車禍，已處理', type: 'traffic', severity: 'low', status: 'Resolved', lat: 24.8500, lng: 120.9300, likes: 6 },
+        { title: '關東橋市場火警', description: '市場攤位火警，已撲滅', type: 'fire', severity: 'medium', status: 'Resolved', lat: 24.8200, lng: 121.0200, likes: 11 },
+        { title: '頭前溪橋積水', description: '橋面積水，已排除', type: 'disaster', severity: 'low', status: 'Resolved', lat: 24.8300, lng: 121.0000, likes: 8 },
+        { title: '科學園區路燈故障', description: '園區路燈故障，已修復', type: 'other', severity: 'low', status: 'Resolved', lat: 24.7800, lng: 121.0050, likes: 3 },
+        { title: '新竹高鐵站車禍', description: '高鐵站前車禍，已處理', type: 'traffic', severity: 'medium', status: 'Resolved', lat: 24.8085, lng: 121.0400, likes: 10 }
       ];
       const now = toTs();
       const saved = seeds.map(s => ({
@@ -156,15 +170,14 @@
   function getIncidents(){ return readArray(STORAGE.incidents); }
   function saveIncidents(list){ writeArray(STORAGE.incidents, list); }
 
- function upsertIncident(incident){
+  function upsertIncident(incident){
     const list = getIncidents();
     const idx = list.findIndex(i => i.id === incident.id);
     if(idx >= 0){ list[idx] = { ...list[idx], ...incident, updatedAt: toTs() }; }
     else { list.unshift({ ...incident, id: generateId('inc'), likes: 0, createdAt: toTs(), updatedAt: toTs() }); }
     saveIncidents(list);
     const saved = idx >= 0 ? list[idx] : list[0];
-    if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}）`, 'info'); }
-
+    if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}`, 'info'); }
     return saved;
   }
 

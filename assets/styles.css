@@ -3,7 +3,8 @@ html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystem
 a { color: #0b70ff; text-decoration: none; }
 
 .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #e5e5e5; background: #fff; position: sticky; top: 0; z-index: 10; }
-.nav a { margin-right: 12px; }
+.nav { display: flex; flex-wrap: wrap; }
+.nav a { margin-right: 12px; display: inline-block; white-space: nowrap; }
 .nav a.active { font-weight: 700; }
 
 .container { display: flex; height: calc(100% - 56px); }
@@ -31,11 +32,19 @@ button.ghost { background: transparent; }
 button + button { margin-left: 8px; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; margin-right: 6px; }
+<<<<<<< HEAD
 .badge.status-Reported { background: #f0f4ff; border-color: #a9c1ff; }
 .badge.status-Accepted { background: #f5fff0; border-color: #bde8a1; }
 .badge.status-VerifiedWarned { background: #fff5db; border-color: #ffd38a; }
 .badge.status-Resolved { background: #eef9f0; border-color: #a6e0b1; }
 .badge.status-Rejected { background: #fdeeee; border-color: #f3a1a1; }
+=======
+.badge.status-Reported { background: #dc2626; color: #fff; border-color: #dc2626; font-weight: 700; }
+.badge.status-Accepted { background: #3b82f6; color: #fff; border-color: #3b82f6; font-weight: 600; }
+.badge.status-VerifiedWarned { background: #f59e0b; color: #fff; border-color: #f59e0b; font-weight: 700; }
+.badge.status-Resolved { background: #10b981; color: #fff; border-color: #10b981; font-weight: 600; }
+.badge.status-Rejected { background: #1f2937; color: #fff; border-color: #1f2937; font-weight: 700; }
+>>>>>>> main
 
 .list { list-style: none; padding: 0; margin: 0; }
 .list li { padding: 10px; border: 1px solid #eee; border-radius: 8px; background: #fff; margin-bottom: 10px; }
@@ -64,6 +73,25 @@ button + button { margin-left: 8px; }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; font-size: 13px; }
 .table th { background: #fafafa; }
+<<<<<<< HEAD
+=======
+.table td { vertical-align: middle; }
+
+/* 滾動容器樣式 */
+.table-container { 
+  max-height: 60vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+}
+.list-container { 
+  max-height: 50vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px;
+}
+>>>>>>> main
 
 .helper { font-size: 12px; color: #666; }
 

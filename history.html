@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>歷史紀錄 - 新竹市即時事故通報（模擬）</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0b70ff">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <div class="header">
+    <div class="logo">📚 歷史紀錄</div>
+    <div class="nav">
+        <a href="index.html">首頁</a>
+        <a href="report.html">通報</a>
+        <a href="subscribe.html">訂閱</a>
+        <a class="active" href="history.html">歷史紀錄</a>
+        <a href="admin.html">管理審核</a>
+    </div>
+    </div>
+
+    <div class="container">
+    <div class="drawer" id="drawer">
+        <div class="drawer-panel">
+        <div class="section">
+            <h3>時間範圍</h3>
+            <div class="filters">
+            <div class="full">
+                <label>顯示區間（僅顯示已結案 Resolved）</label>
+                <select id="range">
+                <option value="1h">近 1 小時</option>
+                <option value="8h">近 8 小時</option>
+                <option value="1d">近 24 小時</option>
+                <option value="7d" selected>近 7 日</option>
+                </select>
+            </div>
+            <div>
+                <label>類別</label>
+                <select id="filterType">
+                <option value="">全部</option>
+                <option value="disaster">天災</option>
+                <option value="fire">消防</option>
+                <option value="traffic">交通</option>
+                <option value="other">其他</option>
+                </select>
+            </div>
+            <div>
+                <label>嚴重度</label>
+                <select id="filterSeverity">
+                <option value="">全部</option>
+                <option value="high">高</option>
+                <option value="medium">中</option>
+                <option value="low">低</option>
+                </select>
+            </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>已結案清單</h3>
+            <div class="list-container">
+                <ul id="list" class="list"></ul>
+            </div>
+            <div style="margin-top:8px;">
+            </div>
+        </div>
+        </div>
+
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+
+        <div class="content">
+        <div class="fab">
+            <button id="btnMenu">☰ 選單</button>
+        </div>
+        <div id="map"></div>
+        </div>
+    </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="assets/app.js"></script>
+    <script src="assets/history.js"></script>
+    <script>
+    if('serviceWorker' in navigator){
+        window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+    }
+    </script>
+</body>
+</html>

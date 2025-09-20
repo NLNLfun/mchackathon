@@ -68,10 +68,25 @@
         tdTitle.appendChild(thumbs);
       }
       tr.appendChild(tdTitle);
+      
+      // 添加點擊事件，讓整行可點擊來顯示地圖位置
+      tr.style.cursor = 'pointer';
+      tr.onclick = () => {
+        const m = markers.get(inc.id);
+        if(m){ 
+          map.setView(m.getLatLng(), 16); 
+          m.openPopup(); 
+        }
+      };
 
       const tdType = document.createElement('td'); tdType.textContent = App.typeLabel(inc.type); tr.appendChild(tdType);
       const tdSev = document.createElement('td'); tdSev.textContent = inc.severity.toUpperCase(); tr.appendChild(tdSev);
-      const tdStatus = document.createElement('td'); tdStatus.textContent = App.statusLabel(inc.status); tr.appendChild(tdStatus);
+      const tdStatus = document.createElement('td'); 
+      const statusSpan = document.createElement('span');
+      statusSpan.textContent = App.statusLabel(inc.status);
+      statusSpan.className = `badge status-${inc.status}`;
+      tdStatus.appendChild(statusSpan);
+      tr.appendChild(tdStatus);
 
       const tdAssign = document.createElement('td');
       const inp = document.createElement('input'); inp.type = 'text'; inp.value = inc.assignedAgency || ''; inp.placeholder = '例如：消防局第二大隊';

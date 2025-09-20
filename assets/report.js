@@ -147,15 +147,14 @@
 
     try {
       const saved = App.upsertIncident(incident); // 確保 await
-      console.log("App.upsertIncident 回傳:", saved);
+      // console.log("App.upsertIncident 回傳:", saved);
 
-      // await axios.post('http://localhost:5678/webhook-test/report', incident);
       const res = await fetch('http://localhost:5678/webhook-test/report', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(incident)
+        body: JSON.stringify(incident) 
       });
-      console.log('Passed data to n8n.', await res.json());
+      console.log('Passed data to n8n.');
 
       alert('已送出通報，案件編號：' + saved.id + '\n將跳轉至審核頁面');
       window.location.href = 'admin.html';
@@ -169,3 +168,4 @@
   // 頁面載入時自動定位
   initUserLocation();
 })();
+

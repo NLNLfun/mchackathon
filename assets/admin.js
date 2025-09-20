@@ -6,13 +6,21 @@
   const tbody = document.getElementById('tbody');
   const btnClearNotifications = document.getElementById('btnClearNotifications');
 
-  // simple modal
+  // fullscreen image modal
   const modal = document.createElement('div');
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:2000;';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:2000;';
+  const modalContent = document.createElement('div');
+  modalContent.style.cssText = 'position:relative;max-width:95vw;max-height:95vh;display:flex;flex-direction:column;align-items:center;';
   const modalImg = document.createElement('img');
-  modalImg.style.cssText = 'max-width:92%;max-height:92%;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.4);';
-  modal.appendChild(modalImg);
-  modal.addEventListener('click', () => modal.style.display = 'none');
+  modalImg.style.cssText = 'max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕ 關閉';
+  closeBtn.style.cssText = 'position:absolute;top:-40px;right:0;background:#fff;color:#333;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px;';
+  modalContent.appendChild(modalImg);
+  modalContent.appendChild(closeBtn);
+  modal.appendChild(modalContent);
+  modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
+  closeBtn.addEventListener('click', () => modal.style.display = 'none');
   document.body.appendChild(modal);
 
   function renderMapMarkers(items){
@@ -46,7 +54,17 @@
       tdTitle.innerHTML = `<div>${inc.title}</div>`;
       if(Array.isArray(inc.photos) && inc.photos.length){
         const thumbs = document.createElement('div'); thumbs.className = 'thumb-list';
-        inc.photos.forEach(p => { const img=document.createElement('img'); img.className='thumb'; img.src=p; img.style.cursor='zoom-in'; img.onclick=()=>{ modalImg.src=p; modal.style.display='flex'; }; thumbs.appendChild(img); });
+        inc.photos.forEach(p => { 
+          const img=document.createElement('img'); 
+          img.className='thumb'; 
+          img.src=p; 
+          img.style.cursor='zoom-in'; 
+          img.onclick=()=>{ 
+            modalImg.src=p; 
+            modal.style.display='flex'; 
+          }; 
+          thumbs.appendChild(img); 
+        });
         tdTitle.appendChild(thumbs);
       }
       tr.appendChild(tdTitle);

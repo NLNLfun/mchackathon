@@ -357,8 +357,8 @@ button + button { margin-left: 8px; }
 
 .img-modal-body{
   position: relative;
-  max-width: 95vw;
-  max-height: 95vh;
+  max-width: 90vw;
+  max-height: 86vh;
   padding: 8px;
   border-radius: 12px;
   background: rgba(20,20,20,0.85);
@@ -367,8 +367,8 @@ button + button { margin-left: 8px; }
 
 .img-view{
   display: block;
-  max-width: 92vw;
-  max-height: vh;
+  max-width: 86vw;
+  max-height: 78vh;
   border-radius: 8px;
   object-fit: contain;
 }

@@ -426,3 +426,83 @@ button + button { margin-left: 8px; }
 .addr-item{ padding:10px 12px; cursor:pointer; font-size:14px; }
 .addr-item:hover, .addr-item.active{ background:#f0f4ff; }
 .addr-sub{ display:block; color:#6b7280; font-size:12px; margin-top:2px; }
+
+/* 桌機：底部導覽不顯示 */
+.bottom-nav { display: none; }
+
+/* 手機版：顯示底部導覽，上圖下字 */
+@media (max-width: 768px) {
+  .nav { display: none; }
+  :root{
+    --bn-h: 56px;
+    --header-h: 56px;
+  }
+
+  /* 用 dvh 解決 iOS 工具列高度變動造成的縫隙 */
+  .container{ height: calc(100vh - var(--header-h)); }
+  @supports (height: 100dvh) {
+    .container{ height: calc(100dvh - var(--header-h)); }
+  }
+
+  .content { position: relative; }
+
+  /* 讓地圖鋪到底，底部導覽「浮在上面」 */
+  #map{
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;   /* 👈 不再預留空間 */
+  }
+
+  /* 把 Leaflet 的底部控制列整排往上移開，避免被導覽列擋住 */
+  .leaflet-bottom{
+    bottom: calc(var(--bn-h) + env(safe-area-inset-bottom) + 8px) !important;
+  }
+  .leaflet-control-attribution{
+    background: rgba(255,255,255,0.9) !important;
+    padding: 2px 8px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 0 8px !important;
+  }
+  .leaflet-control-scale{
+    background: rgba(255,255,255,0.9);
+    padding: 2px 6px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 0 8px;
+  }
+
+  /* 底部導覽列：浮在地圖上方 */
+  .bottom-nav{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    height: calc(var(--bn-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: #fff;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.06);  /* 視覺上更貼合 */
+    z-index: 3000;
+  }
+  .bottom-nav a{
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px; text-decoration: none;
+    color: #475569; font-size: 12px; height: var(--bn-h);
+  }
+  .bottom-nav .icon{ font-size: 22px; line-height: 1; }
+  .bottom-nav a.active{ color: #0b70ff; font-weight: 700; }
+
+  /* Toast 往上移，避免被導覽擋住 */
+  .toast-container{
+    left: 16px; right: 16px;
+    bottom: calc(var(--bn-h) + env(safe-area-inset-bottom) + 16px) !important;
+    z-index: 4000;
+    pointer-events: none;
+  }
+  .toast{ pointer-events: auto; max-width: none; }
+
+  /* 手機置中標題（可留著） */
+  .header{ justify-content: center; }
+  .header .logo{ text-align: center; margin: 0 auto; font-weight: 700; }
+}

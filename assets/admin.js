@@ -68,6 +68,16 @@
         tdTitle.appendChild(thumbs);
       }
       tr.appendChild(tdTitle);
+      
+      // 添加點擊事件，讓整行可點擊來顯示地圖位置
+      tr.style.cursor = 'pointer';
+      tr.onclick = () => {
+        const m = markers.get(inc.id);
+        if(m){ 
+          map.setView(m.getLatLng(), 16); 
+          m.openPopup(); 
+        }
+      };
 
       const tdType = document.createElement('td'); tdType.textContent = App.typeLabel(inc.type); tr.appendChild(tdType);
       const tdSev = document.createElement('td'); tdSev.textContent = inc.severity.toUpperCase(); tr.appendChild(tdSev);

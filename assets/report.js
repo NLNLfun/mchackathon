@@ -80,6 +80,106 @@
     });
   }
 
+  // 利用地址搜尋地圖
+  const addrInput = document.getElementById('addrInput');
+  const addrDropdown = document.getElementById('addrDropdown');
+  let addrResults = [];
+  let addrActive = -1;
+  let addrTimer = null;
+
+  function debounce(fn, ms){
+    return (...args) => { clearTimeout(addrTimer); addrTimer = setTimeout(() => fn(...args), ms); };
+  }
+
+  async function geocode(q){
+    const url = new URL('https://nominatim.openstreetmap.org/search');
+    url.searchParams.set('q', q);
+    url.searchParams.set('format', 'jsonv2');
+    url.searchParams.set('addressdetails', '1');
+    url.searchParams.set('accept-language', 'zh-TW');
+    url.searchParams.set('countrycodes', 'tw');   // 只找台灣；要找全球就刪掉這行
+    url.searchParams.set('limit', '8');
+
+    const r = await fetch(url.toString(), { headers: { 'Accept': 'application/json' }});
+    if(!r.ok) throw new Error('geocode failed');
+    return r.json();
+  }
+
+  function renderAddrList(list){
+    addrDropdown.innerHTML = '';
+    addrActive = -1;
+    if(!list.length){ addrDropdown.classList.remove('open'); return; }
+
+    list.forEach((it, idx) => {
+      const div = document.createElement('div');
+      div.className = 'addr-item';
+      const main = it.display_name.split(',').slice(0,2).join('，'); // 前兩段做主標
+      const sub  = it.display_name;
+      div.innerHTML = `<div>${main}</div><small class="addr-sub">${sub}</small>`;
+      div.addEventListener('click', () => pickAddr(idx));
+      addrDropdown.appendChild(div);
+    });
+    addrDropdown.classList.add('open');
+  }
+
+  async function doSearch(q){
+    if(!q || q.trim().length < 2){ addrDropdown.classList.remove('open'); return; }
+    try{
+      addrResults = await geocode(q.trim());
+      renderAddrList(addrResults);
+    }catch(e){
+      console.warn(e);
+      addrDropdown.classList.remove('open');
+    }
+  }
+
+  function pickAddr(i){
+    const it = addrResults[i];
+    if(!it) return;
+    const lat = parseFloat(it.lat), lng = parseFloat(it.lon);
+
+    map.setView({lat, lng}, 17);
+    setLatLng({lat, lng});   
+
+    addrInput.value = it.display_name;
+    addrDropdown.classList.remove('open');
+  }
+
+  addrInput.addEventListener('keydown', (e) => {
+    const items = Array.from(addrDropdown.querySelectorAll('.addr-item'));
+    if(!items.length) return;
+
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      addrActive = (addrActive + 1) % items.length;
+    }else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      addrActive = (addrActive - 1 + items.length) % items.length;
+    }else if(e.key === 'Enter'){
+      e.preventDefault();
+      if(addrActive >= 0) pickAddr(addrActive);
+      return;
+    }else if(e.key === 'Escape'){
+      addrDropdown.classList.remove('open');
+      return;
+    }else{
+      return;
+    }
+    items.forEach((n, i) => n.classList.toggle('active', i === addrActive));
+    items[addrActive].scrollIntoView({ block: 'nearest' });
+  });
+
+  addrInput.addEventListener('input', debounce((e) => {
+    doSearch(e.target.value);
+  }, 300));
+
+  document.addEventListener('click', (e) => {
+    if(!addrDropdown.contains(e.target) && e.target !== addrInput){
+      addrDropdown.classList.remove('open');
+    }
+  });
+  // 利用地址搜尋地圖end
+
   function showUserLocation(){
     if(!userLocation) return;
     map.setView(userLocation, 15);
@@ -144,8 +244,8 @@
       photos: photoDataUrls
     };
     const saved = App.upsertIncident(incident);
-    alert('已送出通報，案件編號：' + saved.id + '\n將跳轉至審核頁面');
-    window.location.href = 'admin.html';
+    sessionStorage.setItem('highlightIncidentId', saved.id);
+    window.location.href = 'index.html';
   };
 
   // 頁面載入時自動定位

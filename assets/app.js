@@ -137,11 +137,36 @@
   function upsertIncident(incident){
     const list = getIncidents();
     const idx = list.findIndex(i => i.id === incident.id);
-    if(idx >= 0){ list[idx] = { ...list[idx], ...incident, updatedAt: toTs() }; }
-    else { list.unshift({ ...incident, id: generateId('inc'), createdAt: toTs(), updatedAt: toTs() }); }
-    saveIncidents(list);
-    const saved = idx >= 0 ? list[idx] : list[0];
-    if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}）`, 'info'); }
+    const nowTs = toTs();
+    let saved;
+
+    if(idx >= 0){
+      const prev = list[idx];
+      const next = { ...prev, ...incident, updatedAt: nowTs };
+
+      if(typeof incident.status === 'string' && incident.status !== prev.status){
+        const ns = incident.status;
+        if(ns === 'Accepted' && !next.acceptedAt) next.acceptedAt = nowTs;
+        if(ns === 'VerifiedWarned' && !next.verifiedAt) next.verifiedAt = nowTs;
+        if(ns === 'Resolved' && !next.resolvedAt) next.resolvedAt = nowTs;
+        if(ns === 'Rejected' && !next.rejectedAt) next.rejectedAt = nowTs;
+      }
+
+      list[idx] = next;
+      saveIncidents(list);
+      saved = next;
+    } else {
+      const base = { ...incident, id: generateId('inc'), createdAt: nowTs, updatedAt: nowTs };
+      if(base.status === 'Accepted') base.acceptedAt = nowTs;
+      if(base.status === 'VerifiedWarned') base.verifiedAt = nowTs;
+      if(base.status === 'Resolved') base.resolvedAt = nowTs;
+      if(base.status === 'Rejected') base.rejectedAt = nowTs;
+
+      list.unshift(base);
+      saveIncidents(list);
+      saved = list[0];
+      addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}）`, 'info');
+    }
     return saved;
   }
 
@@ -172,6 +197,12 @@
 
   ensureSeeds();
 
+  function withinMs(ts, windowMs){
+    if(!ts) return false;
+    const now = toTs();
+    return (now - ts) <= windowMs
+  }
+
   window.App = {
     DEFAULT_CENTER,
     STORAGE,
@@ -184,5 +215,6 @@
     haversineMeters,
     notifyForIncident,
     showInstallPrompt,
+    withinMs,
   };
 })();

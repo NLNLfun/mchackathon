@@ -3,7 +3,8 @@ html, body { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystem
 a { color: #0b70ff; text-decoration: none; }
 
 .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #e5e5e5; background: #fff; position: sticky; top: 0; z-index: 10; }
-.nav a { margin-right: 12px; }
+.nav { display: flex; flex-wrap: wrap; }
+.nav a { margin-right: 12px; display: inline-block; white-space: nowrap; }
 .nav a.active { font-weight: 700; }
 
 .container { display: flex; height: calc(100% - 56px); }

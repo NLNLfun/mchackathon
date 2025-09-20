@@ -91,25 +91,29 @@
   }
 
   function notifyForIncident(incident){
+    // 只有經過審核證實的事故才發送警告通知
+    if(incident.status !== 'VerifiedWarned'){
+      return; // 未證實的事故不發送警告
+    }
+    
     const subs = readArray(STORAGE.subscriptions);
     const matched = subs.filter(s => shouldNotifyForIncident(incident, s));
-    const isWarn = (incident.status === 'VerifiedWarned') || (incident.severity === 'high' && (incident.status === 'Accepted' || incident.status === 'VerifiedWarned'));
-    if(isWarn){
-      let advice = '';
-      if(incident.type === 'fire'){
-        advice = '消防警示：保持低姿勢、用濕布掩口鼻、切勿搭電梯。查看官方避難原則 →';
-      } else if(incident.type === 'traffic'){
-        advice = '交通警示：請減速慢行，評估改道避開事故路段。';
-      } else if(incident.type === 'disaster'){
-        advice = '天災警示：請遠離危險區域，注意官方疏散指示。';
-      } else {
-        advice = '注意安全，留心官方後續通報。';
-      }
-      const msg = `[${typeLabel(incident.type)}] ${incident.severity.toUpperCase()}｜${incident.description || ''} ${advice}`.trim();
-      // 如果有訂閱匹配或高風險事故，都應該通知
-      if(matched.length > 0 || incident.severity === 'high'){
-        addNotification(incident, msg, 'warn');
-      }
+    
+    let advice = '';
+    if(incident.type === 'fire'){
+      advice = '消防警示：保持低姿勢、用濕布掩口鼻、切勿搭電梯。查看官方避難原則 →';
+    } else if(incident.type === 'traffic'){
+      advice = '交通警示：請減速慢行，評估改道避開事故路段。';
+    } else if(incident.type === 'disaster'){
+      advice = '天災警示：請遠離危險區域，注意官方疏散指示。';
+    } else {
+      advice = '注意安全，留心官方後續通報。';
+    }
+    const msg = `[${typeLabel(incident.type)}] ${incident.severity.toUpperCase()}｜${incident.description || ''} ${advice}`.trim();
+    
+    // 如果有訂閱匹配，發送通知
+    if(matched.length > 0){
+      addNotification(incident, msg, 'warn');
     }
   }
 

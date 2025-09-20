@@ -88,3 +88,196 @@ button + button { margin-left: 8px; }
 .thumb-list { display:flex; gap:8px; flex-wrap: wrap; margin-top:6px; }
 
 .leaflet-container { font: inherit; }
+
+/* 通知系統樣式 */
+.notification-filters { 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  flex-wrap: wrap; 
+}
+.filter-btn { 
+  padding: 6px 12px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 20px; 
+  cursor: pointer; 
+  font-size: 12px; 
+  transition: all 0.2s; 
+}
+.filter-btn.active { 
+  background: #0b70ff; 
+  color: #fff; 
+  border-color: #0b70ff; 
+}
+.filter-btn:hover { 
+  background: #f0f4ff; 
+  border-color: #0b70ff; 
+}
+.filter-btn.active:hover { 
+  background: #0b70ff; 
+}
+
+.notification-list { 
+  max-height: 60vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px; 
+}
+.notification-item { 
+  padding: 12px; 
+  border: 1px solid #eee; 
+  border-radius: 8px; 
+  margin-bottom: 8px; 
+  background: #fff; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+}
+.notification-item.unread { 
+  border-left: 4px solid #0b70ff; 
+  background: #f8faff; 
+}
+.notification-item.priority-high { 
+  border-left-color: #dc2626; 
+}
+.notification-item:hover { 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+}
+.notification-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 4px; 
+}
+.notification-icons { 
+  display: flex; 
+  gap: 4px; 
+  font-size: 14px; 
+}
+.notification-time { 
+  font-size: 11px; 
+  color: #666; 
+}
+.notification-title { 
+  font-weight: 600; 
+  margin-bottom: 4px; 
+  color: #333; 
+}
+.notification-message { 
+  font-size: 13px; 
+  color: #666; 
+  margin-bottom: 8px; 
+  line-height: 1.4; 
+}
+.notification-actions { 
+  display: flex; 
+  gap: 8px; 
+}
+.mark-read-btn, .delete-btn { 
+  padding: 4px 8px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 11px; 
+  transition: all 0.2s; 
+}
+.mark-read-btn { 
+  color: #0b70ff; 
+  border-color: #0b70ff; 
+}
+.mark-read-btn:hover { 
+  background: #0b70ff; 
+  color: #fff; 
+}
+.delete-btn { 
+  color: #dc2626; 
+  border-color: #dc2626; 
+}
+.delete-btn:hover { 
+  background: #dc2626; 
+  color: #fff; 
+}
+.empty-notification { 
+  text-align: center; 
+  color: #666; 
+  padding: 40px 20px; 
+  font-style: italic; 
+}
+
+/* 批量操作樣式 */
+.batch-controls { 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  padding: 12px; 
+  background: #f8faff; 
+  border-radius: 8px; 
+  border: 1px solid #e0e7ff; 
+}
+.batch-controls.hidden { 
+  display: none; 
+}
+.batch-info { 
+  flex: 1; 
+  font-size: 14px; 
+  color: #666; 
+  display: flex; 
+  align-items: center; 
+}
+.batch-actions { 
+  display: flex; 
+  gap: 8px; 
+}
+.batch-btn { 
+  padding: 6px 12px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 12px; 
+  transition: all 0.2s; 
+}
+.batch-btn.primary { 
+  background: #0b70ff; 
+  color: #fff; 
+  border-color: #0b70ff; 
+}
+.batch-btn:hover { 
+  background: #f0f4ff; 
+  border-color: #0b70ff; 
+}
+.batch-btn.primary:hover { 
+  background: #0b70ff; 
+}
+
+/* 審核歷史樣式 */
+.audit-log { 
+  max-height: 40vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px; 
+  background: #fafafa; 
+}
+.audit-item { 
+  padding: 8px; 
+  border-bottom: 1px solid #eee; 
+  font-size: 12px; 
+}
+.audit-item:last-child { 
+  border-bottom: none; 
+}
+.audit-time { 
+  color: #666; 
+  font-weight: 600; 
+}
+.audit-action { 
+  color: #333; 
+  margin: 2px 0; 
+}
+.audit-details { 
+  color: #666; 
+  font-style: italic; 
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>通知中心 - 新竹市即時事故通報（模擬）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b70ff">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🔔 通知中心</div>
+    <div class="nav">
+      <a href="index.html">首頁</a>
+      <a href="report.html">通報</a>
+      <a href="subscribe.html">訂閱</a>
+      <a href="history.html">歷史紀錄</a>
+      <a href="admin.html">管理審核</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="section">
+        <h3>通知設定</h3>
+        <div class="form-row">
+          <div>
+            <label>
+              <input type="checkbox" id="enablePush" checked> 啟用推播通知
+            </label>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox" id="enableSound" checked> 通知音效
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>通知優先級</label>
+            <select id="minPriority">
+              <option value="low">全部通知</option>
+              <option value="medium" selected>中優先級以上</option>
+              <option value="high">僅高優先級</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>通知類型</label>
+            <div>
+              <label><input type="checkbox" id="type-fire" checked> 消防事故</label>
+              <label><input type="checkbox" id="type-traffic" checked> 交通事故</label>
+              <label><input type="checkbox" id="type-disaster" checked> 天災</label>
+              <label><input type="checkbox" id="type-other" checked> 其他</label>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <button id="btnSaveSettings" class="primary">儲存設定</button>
+          <button id="btnClearAll" class="ghost">清空所有通知</button>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="section">
+        <h3>通知歷史</h3>
+        <div class="notification-filters">
+          <button id="btnAll" class="filter-btn active">全部</button>
+          <button id="btnUnread" class="filter-btn">未讀</button>
+          <button id="btnHigh" class="filter-btn">高優先級</button>
+          <button id="btnWarn" class="filter-btn">警告</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+          <!-- 通知列表將在這裡動態生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script src="assets/notifications.js"></script>
+  <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); }</script>
+</body>
+</html>

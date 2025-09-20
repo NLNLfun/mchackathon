@@ -3,6 +3,14 @@
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
 
   const markers = new Map();
+  const markerClusterGroup = L.markerClusterGroup({
+    chunkedLoading: true,
+    maxClusterRadius: 50,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true
+  });
+  map.addLayer(markerClusterGroup);
 
   const els = {
     list: document.getElementById('incidentList'),
@@ -52,8 +60,10 @@
   }
 
   function renderMarkers(data){
-    markers.forEach(m => map.removeLayer(m));
+    // 清除現有標記
+    markerClusterGroup.clearLayers();
     markers.clear();
+    
     data.forEach(inc => {
       const color = App.severityColor(inc.severity);
       const emoji = App.typeEmoji(inc.type);
@@ -69,12 +79,16 @@
           iconSize: [36, 36],
           iconAnchor: [18, 18]
         })
-      }).addTo(map);
+      });
+      
       marker.bindPopup(popupHtml(inc));
       marker.on('popupopen', (e) => {
         const node = e.popup.getElement();
         attachPopupActions(node, inc);
       });
+      
+      // 添加到群組而不是直接添加到地圖
+      markerClusterGroup.addLayer(marker);
       markers.set(inc.id, marker);
     });
   }

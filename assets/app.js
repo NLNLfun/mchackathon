@@ -90,18 +90,44 @@
     return dist <= (subscription.radiusMeters || 0);
   }
 
-  function addNotification(incident, message, level){
+  function addNotification(incident, message, level, action = 'general'){
     const list = readArray(STORAGE.notifications);
-    list.unshift({
+    
+    // 檢查是否已存在相同的通知（去重機制）
+    const duplicateKey = incident ? `${incident.id}_${action}` : `system_${action}`;
+    const existingNotification = list.find(n => n.duplicateKey === duplicateKey);
+    
+    if(existingNotification){
+      // 如果存在重複通知，更新時間但不新增
+      existingNotification.createdAt = toTs();
+      existingNotification.read = false; // 重新標記為未讀
+      writeArray(STORAGE.notifications, list);
+      return existingNotification;
+    }
+    
+    const notification = {
       id: generateId('ntf'),
       incidentId: incident ? incident.id : null,
-      title: incident ? incident.title : '通知',
+      title: incident ? incident.title : '系統通知',
       message,
       level: level || 'info',
+      action: action,
+      duplicateKey: duplicateKey,
       createdAt: toTs(),
-      read: false
-    });
+      read: false,
+      priority: getNotificationPriority(level, incident)
+    };
+    
+    list.unshift(notification);
     writeArray(STORAGE.notifications, list.slice(0, 100));
+    return notification;
+  }
+  
+  function getNotificationPriority(level, incident){
+    if(level === 'warn') return 'high';
+    if(incident && incident.severity === 'high') return 'high';
+    if(level === 'info') return 'medium';
+    return 'low';
   }
 
   function notifyForIncident(incident){

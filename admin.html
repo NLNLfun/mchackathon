@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>管理審核 - 新竹市即時事故通報（模擬）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b70ff">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🛠️ 管理審核</div>
+    <div class="nav">
+      <a href="index.html">首頁</a>
+      <a href="report.html">通報</a>
+      <a href="subscribe.html">訂閱</a>
+      <a class="active" href="admin.html">管理審核</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="section">
+        <h3>說明</h3>
+        <div class="helper">可從 Reported → Accepted（分派單位）→ Verified &amp; Warned（官方確認並發出警告）→ Resolved 或 Rejected。</div>
+        <div style="margin-top:8px;"><button id="btnClearNotifications" class="ghost">清空通知</button></div>
+      </div>
+      <div class="section">
+        <h3>事故清單</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>標題/照片</th>
+              <th>類別</th>
+              <th>嚴重度</th>
+              <th>狀態</th>
+              <th>指派</th>
+              <th>動作</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="content">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="""></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/admin.js"></script>
+  <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); }</script>
+</body>
+</html>

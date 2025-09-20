@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>訂閱路段/區域 - 新竹市即時事故通報（模擬）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b70ff">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🔔 訂閱路段/區域</div>
+    <div class="nav">
+      <a href="index.html">首頁</a>
+      <a href="report.html">通報</a>
+      <a class="active" href="subscribe.html">訂閱</a>
+      <a href="admin.html">管理審核</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="drawer" id="drawer">
+      <div class="drawer-panel">
+        <div class="section">
+          <h3>訂閱條件</h3>
+          <div class="form-row">
+            <div>
+              <label>半徑（公尺）</label>
+              <input id="radius" type="number" value="1000" min="100" step="100" />
+            </div>
+            <div>
+              <label>最低嚴重度</label>
+              <select id="minSeverity">
+                <option value="low">低</option>
+                <option value="medium" selected>中</option>
+                <option value="high">高</option>
+              </select>
+            </div>
+            <div class="full">
+              <label>類別</label>
+            <div>
+              <label><input type="checkbox" name="cat" value="disaster"> 天災</label>
+              <label><input type="checkbox" name="cat" value="fire" checked> 消防</label>
+              <label><input type="checkbox" name="cat" value="traffic" checked> 交通</label>
+              <label><input type="checkbox" name="cat" value="other"> 其他</label>
+            </div>
+            </div>
+            <div class="full">
+              <label>中心座標</label>
+              <input id="coords" type="text" readonly />
+              <div class="helper">點擊地圖設定中心；可拖曳藍色圓形調整位置</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <button id="btnLocate" class="ghost">使用目前位置</button>
+            <button id="btnSave" class="primary">儲存訂閱</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>已儲存的訂閱</h3>
+          <ul id="subList" class="list"></ul>
+        </div>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+      <div class="content">
+        <div class="fab">
+          <button id="btnMenu">☰ 選單</button>
+        </div>
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="""></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/subscribe.js"></script>
+  <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); }</script>
+</body>
+</html>

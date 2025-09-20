@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>通報事故 - 新竹市即時事故通報（模擬）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b70ff">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">📝 通報事故</div>
+    <div class="nav">
+      <a href="index.html">首頁</a>
+      <a class="active" href="report.html">通報</a>
+      <a href="subscribe.html">訂閱</a>
+      <a href="admin.html">管理審核</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="drawer" id="drawer">
+      <div class="drawer-panel">
+        <div class="section">
+          <h3>事故資訊</h3>
+          <div class="form-row">
+            <div>
+              <label>類別</label>
+            <select id="type">
+              <option value="disaster">天災（暴雨、淹水、地震）</option>
+              <option value="fire">消防（火災、氣爆）</option>
+              <option value="traffic">交通（車禍、拋錨、路障）</option>
+              <option value="other">其他（路障、樹倒、施工、物損）</option>
+            </select>
+            </div>
+            <div>
+              <label>嚴重度</label>
+              <select id="severity">
+                <option value="high">高</option>
+                <option value="medium" selected>中</option>
+                <option value="low">低</option>
+              </select>
+            </div>
+            <div class="full">
+              <label>標題</label>
+              <input id="title" type="text" placeholder="例如：光復路口兩車碰撞" />
+            </div>
+            <div class="full">
+              <label>描述</label>
+              <textarea id="description" rows="4" placeholder="簡述狀況、是否回堵、是否有危險"></textarea>
+            </div>
+            <div class="full">
+              <label>座標</label>
+              <input id="coords" type="text" readonly />
+              <div class="helper">可點擊地圖或使用「使用目前位置」取得座標</div>
+            </div>
+            <div class="full">
+              <label>現場照片（可多張）</label>
+              <input id="photos" type="file" accept="image/*" multiple />
+              <div id="preview" class="thumb-list"></div>
+              <div class="helper">僅用於示意，影像會以 base64 儲存在本機（localStorage）。</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;">
+            <button id="btnLocate" class="ghost">使用目前位置</button>
+            <button id="btnSubmit" class="primary">送出通報</button>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+      <div class="content">
+        <div class="fab">
+          <button id="btnMenu">☰ 選單</button>
+        </div>
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/report.js"></script>
+  <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); }</script>
+</body>
+</html>

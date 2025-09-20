@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新竹市即時事故通報（模擬）</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b70ff">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🚨 新竹市即時事故通報（模擬）</div>
+    <div class="nav">
+      <a class="active" href="index.html">首頁</a>
+      <a href="report.html">通報</a>
+      <a href="subscribe.html">訂閱</a>
+      <a href="admin.html">管理審核</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="drawer" id="drawer">
+      <div class="drawer-panel">
+        <div class="section">
+          <h3>篩選</h3>
+          <div class="filters">
+            <div>
+              <label>類別</label>
+              <select id="filterType">
+                <option value="">全部</option>
+                <option value="disaster">天災</option>
+                <option value="fire">消防</option>
+                <option value="traffic">交通</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div>
+              <label>嚴重度</label>
+              <select id="filterSeverity">
+                <option value="">全部</option>
+                <option value="high">高</option>
+                <option value="medium">中</option>
+                <option value="low">低</option>
+              </select>
+            </div>
+            <div class="full">
+              <label>狀態</label>
+              <select id="filterStatus">
+                <option value="">全部</option>
+                <option value="Reported">Reported</option>
+                <option value="Accepted">Accepted</option>
+                <option value="VerifiedWarned">Verified &amp; Warned</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <h3>事故列表</h3>
+          <ul id="incidentList" class="list"></ul>
+        </div>
+      </div>
+      <div class="drawer-overlay" id="drawerOverlay"></div>
+      <div class="content">
+        <div class="fab">
+          <button id="btnMenu">☰ 選單</button>
+          <button id="btnInstall">＋ 安裝</button>
+        </div>
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/home.js"></script>
+  <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); } document.getElementById('btnInstall').addEventListener('click', () => App.showInstallPrompt());</script>
+</body>
+</html>

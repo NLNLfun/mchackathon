@@ -5,12 +5,14 @@ const ASSETS = [
   '/report.html',
   '/subscribe.html',
   '/admin.html',
+  '/history.html',
   '/assets/styles.css',
   '/assets/app.js',
   '/assets/home.js',
   '/assets/report.js',
   '/assets/subscribe.js',
   '/assets/admin.js',
+  '/assets/history.js',
   '/manifest.webmanifest'
 ];
 

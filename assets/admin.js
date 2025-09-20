@@ -210,12 +210,12 @@
       if(geminiData?.severity_score){
         const note = document.createElement('div');
         note.style.fontSize = '0.9em';
-        note.style.fontWeight = 'bold'
+        note.style.fontWeight = 'bold';
         note.style.color = '	#2E8B57';
         note.textContent = geminiData.severity_score;
         tdSev.appendChild(note);
       }
-      
+
       const tdStatus = document.createElement('td'); 
       const statusSpan = document.createElement('span');
       statusSpan.textContent = App.statusLabel(inc.status);

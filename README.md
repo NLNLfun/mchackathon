@@ -65,3 +65,30 @@
 ## 注意
 - 所有資料皆存於瀏覽器 `localStorage`，清除瀏覽資料會一併清除。
 - 地圖底圖使用 Leaflet + OSM，請保持網路連線以載入底圖瓦片。
+
+
+## branch
+更新到最新後開始新 branch
+* Step 1. 確認到 main branch 中 
+    * `git checkout main` 
+    * `git pull`
+* Step 2. 開新的 branch 
+    * `git branch feat/<newFeature>` 
+    * `git checkout feat/<newFeature>`
+* Step 3. 開發好新功能
+    * `git add .`
+    * `git commit -am "<commitMessage>"`
+    * `git rebase --continue`
+    * `git push origin feature-branch`*# 如果是新分支*
+    * `git push -f origin feature-branch`*# 如果分支已存在（因為rebase後需要強制推送）*
+* Step 4. 到 Github 發送 PR
+
+單純更新到最新
+* Step 1. 確認到主支把 repo 的抓下來
+    * `git checkout main` 
+    * `git pull`
+* Step 2. 切回我自己的 branch 
+    * `git checkout feature/<newFeature>`
+* Step 3. 把 master 合併到我自己的 branch
+    * `git merge main`
+* Step 4. 修 conflict（如果有的話）

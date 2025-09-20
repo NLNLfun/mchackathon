@@ -21,22 +21,23 @@ els.overlay.addEventListener('click', closeDrawer);
 const markers = [];
 function clearMarkers(){ markers.splice(0).forEach(m => map.removeLayer(m)); }
 
-function windowMs(key){
-    if(key === '8h') return 8*60*60*1000;
-    if(key === '24h') return 24*60*60*1000;
-    return 7*24*60*60*1000; // 7d
-}
-
-function getFiltered(){
+function getFiltered(range){
     const all = App.getIncidents();
-    const win = windowMs(els.range.value);
-    return all.filter(x => {
-    if(x.status !== 'Resolved') return false;
-    if(!App.withinMs(x.resolvedAt, win)) return false;
-    if(els.type.value && x.type !== els.type.value) return false;
-    if(els.sev.value && x.severity !== els.sev.value) return false;
-    return true;
-    }).sort((a,b) => (b.resolvedAt||0) - (a.resolvedAt||0));
+    const resolved = all.filter(i => i.status === 'Resolved');
+    const now = App.toTs();
+    if(range === '1h'){
+        return resolved.filter(i => withinMs(i.updatedAt, 1 * 60 * 60 * 1000));
+    }
+    if(range === '8h'){
+        return resolved.filter(i => withinMs(i.updatedAt, 8 * 60 * 60 * 1000));
+    }
+    if(range === '1d'){
+        return resolved.filter(i => withinMs(i.updatedAt, 24 * 60 * 60 * 1000));
+    }
+    if(range === '7d'){
+        return resolved.filter(i => withinMs(i.updatedAt, 7 * 24 * 60 * 60 * 1000));
+    }
+    return resolved;
 }
 
 function renderMap(items){

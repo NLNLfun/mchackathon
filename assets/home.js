@@ -41,9 +41,19 @@
     }
     actions.push(`<button data-act="like" class=\"btn\" style=\"background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}\">👍 ${inc.likes || 0}</button>`);
     return `
-      <div style=\"min-width:220px\"><b>${inc.title}</b><br>${App.typeLabel(inc.type)} | ${inc.severity.toUpperCase()}<br><span style=\"color:${App.statusColor(inc.status)}\">${App.statusLabel(inc.status)}</span>
-      <div style=\"margin-top:6px\">${inc.description || ''}</div>
-      <div class=\"actions\" style=\"margin-top:8px\">${actions.join(' ')}</div></div>`;
+    <div style="min-width:220px">
+      <b>${inc.title}</b><br>
+      <div class="pills">
+        <span class="badge cat-${inc.type}">${App.typeLabel(inc.type)}</span>
+        <span class="badge sev-${inc.severity.toUpperCase()}">${inc.severity.toUpperCase()}</span>
+        <span class="badge status-${inc.status}">${App.statusLabel(inc.status)}</span>
+      </div>
+      <div style="margin-top:6px">${inc.description || ''}</div>
+      <div class="muted" style="margin-top:6px">
+        回報時間：${new Date(inc.createdAt || inc.updatedAt).toLocaleString()}
+      </div>
+      <div class="actions" style="margin-top:8px">${actions.join(' ')}</div>
+    </div>`;
   }
 
   function attachPopupActions(container, inc){
@@ -156,6 +166,7 @@
     const status = els.status.value;
     return App.getIncidents().filter(i => (
       i.status !== 'Rejected' && // 過濾掉被拒絕的事故
+      i.status !== 'Resolved' &&  // 結案的放到 history 就好
       (!type || i.type === type) &&
       (!sev || i.severity === sev) &&
       (!status || i.status === status)

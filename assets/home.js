@@ -95,7 +95,7 @@
 
     // 有照片才顯示
     const photosBtn = (inc.photos && inc.photos.length)
-      ? `<button data-act="photos" class="btn ghost small photos-btn">📷 查看相片 (${inc.photos.length})</button>`
+      ? `<button data-act="photos" class="btn ghost small photos-btn"> 相片 (${inc.photos.length})</button>`
       : '';
 
     return `

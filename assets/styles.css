@@ -67,6 +67,21 @@ button + button { margin-left: 8px; }
 .table th { background: #fafafa; }
 .table td { vertical-align: middle; }
 
+/* 滾動容器樣式 */
+.table-container { 
+  max-height: 60vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+}
+.list-container { 
+  max-height: 50vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px;
+}
+
 .helper { font-size: 12px; color: #666; }
 
 .thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid #e5e7eb; }

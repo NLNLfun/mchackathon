@@ -26,11 +26,12 @@
       actions.push(`<button data-act="evac" class=\"btn\">避難原則</button>`);
     } else if(inc.type === 'traffic'){
       actions.push(`<button data-act="reroute" class=\"btn\">改道路線</button>`);
-    } else if(inc.type === 'lighting'){
-      actions.push(`<button data-act="1999" class=\"btn\">通報1999</button>`);
-    } else if(inc.type === 'road'){
-      actions.push(`<button data-act="public-works" class=\"btn\">工務建議</button>`);
+    } else if(inc.type === 'disaster'){
+      actions.push(`<button data-act="disaster" class=\"btn\">天災應對</button>`);
+    } else {
+      actions.push(`<button data-act="other" class=\"btn\">相關建議</button>`);
     }
+    actions.push(`<button data-act="like" class=\"btn\" style=\"background:#e11d48;color:#fff;border-color:#e11d48\">👍 ${inc.likes || 0}</button>`);
     return `
       <div style=\"min-width:220px\"><b>${inc.title}</b><br>${App.typeLabel(inc.type)} | ${inc.severity.toUpperCase()}<br><span style=\"color:${App.statusColor(inc.status)}\">${App.statusLabel(inc.status)}</span>
       <div style=\"margin-top:6px\">${inc.description || ''}</div>
@@ -42,10 +43,12 @@
     if(evac){ evac.addEventListener('click', (e) => { e.stopPropagation(); window.open('https://www.tfdp.com.tw/cht/index.php?code=list&flag=detail&ids=55&article_id=152', '_blank'); }); }
     const reroute = container.querySelector('[data-act="reroute"]');
     if(reroute){ reroute.addEventListener('click', (e) => { e.stopPropagation(); alert('建議：避開事故路段，使用替代道路。'); }); }
-    const n1999 = container.querySelector('[data-act="1999"]');
-    if(n1999){ n1999.addEventListener('click', (e) => { e.stopPropagation(); alert('建議：撥打 1999 市民專線通報照明故障。'); }); }
-    const pw = container.querySelector('[data-act="public-works"]');
-    if(pw){ pw.addEventListener('click', (e) => { e.stopPropagation(); alert('建議：向市府工務單位回報路面坑洞，並注意慢行。'); }); }
+    const disaster = container.querySelector('[data-act="disaster"]');
+    if(disaster){ disaster.addEventListener('click', (e) => { e.stopPropagation(); alert('天災應對：請遠離危險區域，注意官方疏散指示，避免進入積水或受災區域。'); }); }
+    const other = container.querySelector('[data-act="other"]');
+    if(other){ other.addEventListener('click', (e) => { e.stopPropagation(); alert('相關建議：請注意安全，可撥打 1999 市民專線通報相關問題。'); }); }
+    const like = container.querySelector('[data-act="like"]');
+    if(like){ like.addEventListener('click', (e) => { e.stopPropagation(); const updated = App.likeIncident(inc.id); if(updated){ like.textContent = `👍 ${updated.likes}`; refresh(); } }); }
   }
 
   function renderMarkers(data){
@@ -56,7 +59,7 @@
       const emoji = App.typeEmoji(inc.type);
       const marker = L.marker([inc.location.lat, inc.location.lng], {
         icon: L.divIcon({
-          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);">${emoji}</div>`,
+          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);position:relative;">${emoji}<div style="position:absolute;top:-8px;right:-8px;background:#e11d48;color:#fff;border-radius:999px;font-size:10px;padding:2px 4px;min-width:16px;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${inc.likes || 0}</div></div>`,
           className: 'custom-marker',
           iconSize: [36, 36],
           iconAnchor: [18, 18]
@@ -133,14 +136,14 @@
       btn.onclick = (e) => { e.stopPropagation(); alert('建議：避開事故路段，使用替代道路。'); };
       actions.appendChild(btn);
     }
-    if(n.level === 'warn' && type === 'lighting'){
-      const btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = '通報 1999';
-      btn.onclick = (e) => { e.stopPropagation(); alert('建議：撥打 1999 市民專線通報照明故障。'); };
+    if(n.level === 'warn' && type === 'disaster'){
+      const btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = '天災應對';
+      btn.onclick = (e) => { e.stopPropagation(); alert('天災應對：請遠離危險區域，注意官方疏散指示，避免進入積水或受災區域。'); };
       actions.appendChild(btn);
     }
-    if(n.level === 'warn' && type === 'road'){
-      const btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = '回報工務單位';
-      btn.onclick = (e) => { e.stopPropagation(); alert('建議：透過市府工務管道回報路面坑洞，避免事故。'); };
+    if(n.level === 'warn' && type === 'other'){
+      const btn = document.createElement('button'); btn.className = 'btn'; btn.textContent = '相關建議';
+      btn.onclick = (e) => { e.stopPropagation(); alert('相關建議：請注意安全，可撥打 1999 市民專線通報相關問題。'); };
       actions.appendChild(btn);
     }
 

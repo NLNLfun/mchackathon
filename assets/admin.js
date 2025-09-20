@@ -79,7 +79,34 @@
       tr.appendChild(tdTitle);
 
       const tdType = document.createElement('td'); tdType.textContent = App.typeLabel(inc.type); tr.appendChild(tdType);
-      const tdSev = document.createElement('td'); tdSev.textContent = inc.severity.toUpperCase(); tr.appendChild(tdSev);
+      
+      // 嚴重度編輯欄位
+      const tdSev = document.createElement('td');
+      const severitySelect = document.createElement('select');
+      severitySelect.style.cssText = 'width: 100%; padding: 4px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;';
+      
+      const severityOptions = [
+        { value: 'low', text: 'LOW' },
+        { value: 'medium', text: 'MEDIUM' },
+        { value: 'high', text: 'HIGH' }
+      ];
+      
+      severityOptions.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        if(opt.value === inc.severity) option.selected = true;
+        severitySelect.appendChild(option);
+      });
+      
+      severitySelect.onchange = () => {
+        const newSeverity = severitySelect.value;
+        App.upsertIncident({ id: inc.id, severity: newSeverity });
+        render(); // 重新渲染以更新地圖標記顏色
+      };
+      
+      tdSev.appendChild(severitySelect);
+      tr.appendChild(tdSev);
       const tdStatus = document.createElement('td'); 
       const statusSpan = document.createElement('span');
       statusSpan.textContent = App.statusLabel(inc.status);

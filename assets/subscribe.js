@@ -49,12 +49,36 @@
 
   const drawnSubs = new Map();
 
+  function renderExistingSubscriptions(){
+    const subs = App.getSubscriptions();
+    subs.forEach(s => {
+      if(!drawnSubs.has(s.id)){
+        const mk = L.marker([s.center.lat, s.center.lng], {
+          icon: L.divIcon({
+            html: '<div style="background:#6b7280;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.3);">📌</div>',
+            className: 'sub-marker',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+          })
+        }).addTo(map).bindPopup(`已訂閱：${s.categories.join(', ')}`);
+        const c = L.circle([s.center.lat, s.center.lng], { 
+          radius: s.radiusMeters, 
+          color: '#6b7280', 
+          fillColor: '#6b7280', 
+          fillOpacity: 0.1,
+          weight: 2
+        }).addTo(map).bindPopup(`訂閱範圍：${s.radiusMeters}m`);
+        drawnSubs.set(s.id, { mk, c });
+      }
+    });
+  }
+
   function highlightSubscription(s){
     if(drawnSubs.has(s.id)){
       const { mk, c } = drawnSubs.get(s.id);
       map.setView(mk.getLatLng(), 15);
-      c.setStyle({ color: '#ef4444' });
-      setTimeout(() => c.setStyle({ color: '#2563eb' }), 1500);
+      c.setStyle({ color: '#ef4444', fillOpacity: 0.2 });
+      setTimeout(() => c.setStyle({ color: '#6b7280', fillOpacity: 0.1 }), 1500);
       return;
     }
     const mk = L.marker([s.center.lat, s.center.lng]).addTo(map);
@@ -71,7 +95,19 @@
       li.innerHTML = `<div class="title">半徑 ${s.radiusMeters}m，${s.categories.join(', ')}，≥${s.minSeverity.toUpperCase()}</div>`;
       const box = document.createElement('div');
       const btnDel = document.createElement('button'); btnDel.textContent = '刪除';
-      btnDel.onclick = (e) => { e.stopPropagation(); const list = App.getSubscriptions().filter(x => x.id !== s.id); App.saveSubscriptions(list); renderSubs(); };
+      btnDel.onclick = (e) => { 
+        e.stopPropagation(); 
+        const list = App.getSubscriptions().filter(x => x.id !== s.id); 
+        App.saveSubscriptions(list); 
+        // 移除地圖上的標記
+        if(drawnSubs.has(s.id)){
+          const { mk, c } = drawnSubs.get(s.id);
+          map.removeLayer(mk);
+          map.removeLayer(c);
+          drawnSubs.delete(s.id);
+        }
+        renderSubs(); 
+      };
       box.appendChild(btnDel);
       li.appendChild(box);
       li.onclick = () => { highlightSubscription(s); closeDrawer(); };
@@ -91,8 +127,10 @@
     const saved = App.upsertSubscription(sub);
     alert('已儲存訂閱');
     renderSubs();
+    renderExistingSubscriptions(); // 重新渲染地圖上的訂閱範圍
     highlightSubscription(saved);
   };
 
   renderSubs();
+  renderExistingSubscriptions(); // 頁面載入時顯示已訂閱範圍
 })();

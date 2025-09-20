@@ -10,7 +10,6 @@
     coords: document.getElementById('coords'),
     photos: document.getElementById('photos'),
     preview: document.getElementById('preview'),
-    btnLocate: document.getElementById('btnLocate'),
     btnSubmit: document.getElementById('btnSubmit'),
     drawer: document.getElementById('drawer'),
     overlay: document.getElementById('drawerOverlay'),
@@ -59,6 +58,8 @@
   map.on('click', (e) => {
     console.log('Map clicked at:', e.latlng); // 除錯用
     setLatLng(e.latlng);
+    // 點擊事故位置後直接跳出選單
+    openDrawer();
   });
 
   // 自動定位並設定通報範圍
@@ -100,12 +101,12 @@
       weight: 2,
       interactive: false // 讓圓圈不阻擋點擊事件
     }).addTo(map);
+    
+    // 自動設定座標欄位為使用者目前位置
+    selectedLatLng = userLocation;
+    els.coords.value = `${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
   }
 
-  els.btnLocate.onclick = () => {
-    if(!userLocation) initUserLocation();
-    else { map.setView(userLocation, 15); }
-  };
 
   function readFileAsDataURL(file){
     return new Promise((resolve, reject) => {
@@ -128,7 +129,7 @@
   });
 
   els.btnSubmit.onclick = () => {
-    if(!selectedLatLng){ alert('請在地圖上點選事故位置或使用目前位置'); return; }
+    if(!selectedLatLng){ alert('請等待定位完成或在地圖上點選事故位置'); return; }
     const title = els.title.value.trim();
     if(!title){ alert('請輸入標題'); return; }
     const incident = {

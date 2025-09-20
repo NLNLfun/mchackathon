@@ -143,8 +143,8 @@
       photos: photoDataUrls
     };
     const saved = App.upsertIncident(incident);
-    alert('已送出通報，案件編號：' + saved.id);
-    window.location.href = 'index.html';
+    alert('已送出通報，案件編號：' + saved.id + '\n將跳轉至審核頁面');
+    window.location.href = 'admin.html';
   };
 
   // 頁面載入時自動定位

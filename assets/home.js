@@ -31,7 +31,7 @@
     } else {
       actions.push(`<button data-act="other" class=\"btn\">相關建議</button>`);
     }
-    actions.push(`<button data-act="like" class=\"btn\" style=\"background:#e11d48;color:#fff;border-color:#e11d48\">👍 ${inc.likes || 0}</button>`);
+    actions.push(`<button data-act="like" class=\"btn\" style=\"background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}\">👍 ${inc.likes || 0}</button>`);
     return `
       <div style=\"min-width:220px\"><b>${inc.title}</b><br>${App.typeLabel(inc.type)} | ${inc.severity.toUpperCase()}<br><span style=\"color:${App.statusColor(inc.status)}\">${App.statusLabel(inc.status)}</span>
       <div style=\"margin-top:6px\">${inc.description || ''}</div>
@@ -57,9 +57,14 @@
     data.forEach(inc => {
       const color = App.severityColor(inc.severity);
       const emoji = App.typeEmoji(inc.type);
+      // 根據嚴重度設定外框顏色
+      let borderColor = '#fff'; // 低嚴重度：白色
+      if(inc.severity === 'medium') borderColor = '#f59e0b'; // 中嚴重度：橙色
+      else if(inc.severity === 'high') borderColor = '#dc2626'; // 高嚴重度：紅色
+      
       const marker = L.marker([inc.location.lat, inc.location.lng], {
         icon: L.divIcon({
-          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);position:relative;">${emoji}<div style="position:absolute;top:-8px;right:-8px;background:#e11d48;color:#fff;border-radius:999px;font-size:10px;padding:2px 4px;min-width:16px;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${inc.likes || 0}</div></div>`,
+          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid ${borderColor};box-shadow:0 2px 8px rgba(0,0,0,0.3);">${emoji}</div>`,
           className: 'custom-marker',
           iconSize: [36, 36],
           iconAnchor: [18, 18]
@@ -100,6 +105,7 @@
     const sev = els.sev.value;
     const status = els.status.value;
     return App.getIncidents().filter(i => (
+      i.status !== 'Rejected' && // 過濾掉被拒絕的事故
       (!type || i.type === type) &&
       (!sev || i.severity === sev) &&
       (!status || i.status === status)

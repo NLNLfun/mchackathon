@@ -90,7 +90,7 @@
       actions.push(`<button data-act="other" class="btn">相關建議</button>`);
     }
     actions.push(
-      `<button data-act="like" class="btn" style="background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}">確實 ${inc.likes || 0}</button>`
+      `<button data-act="like" class="btn" style="background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}">🐦 確實 ${inc.likes || 0}</button>`
     );
 
     // 有照片才顯示

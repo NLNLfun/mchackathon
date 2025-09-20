@@ -16,6 +16,7 @@
     btnMenu: document.getElementById('btnMenu')
   };
 
+
   function openDrawer(){ els.drawer.classList.add('open'); }
   function closeDrawer(){ els.drawer.classList.remove('open'); }
   els.btnMenu.addEventListener('click', () => openDrawer());
@@ -26,7 +27,7 @@
   let photoDataUrls = [];
   let userLocation = null;
   let userCircle = null;
-  const REPORT_RADIUS = 800; // 800公尺範圍內可通報
+  const REPORT_RADIUS = 1000; // 800公尺範圍內可通報
 
   function setLatLng(latlng){
     if(!userLocation) {
@@ -228,7 +229,7 @@
     }
   });
 
-  els.btnSubmit.onclick = () => {
+  els.btnSubmit.onclick = async () => {
     if(!selectedLatLng){ alert('請等待定位完成或在地圖上點選事故位置'); return; }
     const title = els.title.value.trim();
     if(!title){ alert('請輸入標題'); return; }
@@ -241,13 +242,40 @@
       location: { lat: selectedLatLng.lat, lng: selectedLatLng.lng, address: '' },
       assignedAgency: '',
       source: 'public',
-      photos: photoDataUrls
+      photos: photoDataUrls.length > 0 ? photoDataUrls : [] 
     };
-    const saved = App.upsertIncident(incident);
-    sessionStorage.setItem('highlightIncidentId', saved.id);
-    window.location.href = 'index.html';
+
+    try {
+      const saved = App.upsertIncident(incident); // 確保 await
+      // console.log("App.upsertIncident 回傳:", saved);
+
+      const res = await fetch('http://localhost:5678/webhook-test/report', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(incident) 
+      });
+      console.log('Passed data to n8n.');
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Failed: ${res.status} ${errText}`);
+      }
+
+      const data = await res.json(); // Gemini AI response
+      console.log("Gemini response:", data);
+
+      localStorage.setItem('latestIncident', JSON.stringify({data, incidentId: saved.id}));
+
+      alert('已送出通報，案件編號：' + saved.id);
+      window.location.href = 'index.html';
+
+    } catch(err) {
+      console.error('送出通報失敗', err);
+      alert('送出通報失敗，請查看 console log');
+    }
   };
 
   // 頁面載入時自動定位
   initUserLocation();
 })();
+

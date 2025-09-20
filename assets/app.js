@@ -212,7 +212,7 @@
     else { list.unshift({ ...incident, id: generateId('inc'), likes: 0, createdAt: toTs(), updatedAt: toTs() }); }
     saveIncidents(list);
     const saved = idx >= 0 ? list[idx] : list[0];
-    if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}）`, 'info'); }
+    if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}`, 'info'); }
     return saved;
   }
 

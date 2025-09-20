@@ -413,3 +413,16 @@ button + button { margin-left: 8px; }
 }
 .btn.small{ padding:6px 10px; font-size:12px; }
 .photos-btn{ border-color:#d1d5db; }
+
+.addr-search { position: relative; }
+#addrInput { width: 100%; padding: 8px; border:1px solid #ddd; border-radius:6px; font-size:14px; }
+.addr-dropdown{
+  position:absolute; left:0; right:0; top:calc(100% + 4px);
+  background:#fff; border:1px solid #e5e5e5; border-radius:8px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  max-height: 280px; overflow-y:auto; display:none; z-index: 2000;
+}
+.addr-dropdown.open{ display:block; }
+.addr-item{ padding:10px 12px; cursor:pointer; font-size:14px; }
+.addr-item:hover, .addr-item.active{ background:#f0f4ff; }
+.addr-sub{ display:block; color:#6b7280; font-size:12px; margin-top:2px; }

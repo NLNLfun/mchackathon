@@ -32,11 +32,11 @@ button.ghost { background: transparent; }
 button + button { margin-left: 8px; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; margin-right: 6px; }
-.badge.status-Reported { background: #f0f4ff; border-color: #a9c1ff; }
-.badge.status-Accepted { background: #f5fff0; border-color: #bde8a1; }
-.badge.status-VerifiedWarned { background: #fff5db; border-color: #ffd38a; }
-.badge.status-Resolved { background: #eef9f0; border-color: #a6e0b1; }
-.badge.status-Rejected { background: #fdeeee; border-color: #f3a1a1; }
+.badge.status-Reported { background: #dc2626; color: #fff; border-color: #dc2626; font-weight: 700; }
+.badge.status-Accepted { background: #3b82f6; color: #fff; border-color: #3b82f6; font-weight: 600; }
+.badge.status-VerifiedWarned { background: #f59e0b; color: #fff; border-color: #f59e0b; font-weight: 700; }
+.badge.status-Resolved { background: #10b981; color: #fff; border-color: #10b981; font-weight: 600; }
+.badge.status-Rejected { background: #1f2937; color: #fff; border-color: #1f2937; font-weight: 700; }
 
 .list { list-style: none; padding: 0; margin: 0; }
 .list li { padding: 10px; border: 1px solid #eee; border-radius: 8px; background: #fff; margin-bottom: 10px; }
@@ -65,6 +65,7 @@ button + button { margin-left: 8px; }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; font-size: 13px; }
 .table th { background: #fafafa; }
+.table td { vertical-align: middle; }
 
 .helper { font-size: 12px; color: #666; }
 

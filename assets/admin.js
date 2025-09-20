@@ -71,7 +71,12 @@
 
       const tdType = document.createElement('td'); tdType.textContent = App.typeLabel(inc.type); tr.appendChild(tdType);
       const tdSev = document.createElement('td'); tdSev.textContent = inc.severity.toUpperCase(); tr.appendChild(tdSev);
-      const tdStatus = document.createElement('td'); tdStatus.textContent = App.statusLabel(inc.status); tr.appendChild(tdStatus);
+      const tdStatus = document.createElement('td'); 
+      const statusSpan = document.createElement('span');
+      statusSpan.textContent = App.statusLabel(inc.status);
+      statusSpan.className = `badge status-${inc.status}`;
+      tdStatus.appendChild(statusSpan);
+      tr.appendChild(tdStatus);
 
       const tdAssign = document.createElement('td');
       const inp = document.createElement('input'); inp.type = 'text'; inp.value = inc.assignedAgency || ''; inp.placeholder = '例如：消防局第二大隊';

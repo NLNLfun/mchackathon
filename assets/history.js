@@ -143,6 +143,8 @@ function fmt(ts){ try{ return ts ? new Date(ts).toLocaleString() : ''; } catch{ 
 
 function refresh(){
     const items = getFiltered();
+    console.log('歷史紀錄頁面 - 已結案事故數量:', items.length);
+    console.log('所有事故:', App.getIncidents().map(i => ({ title: i.title, status: i.status })));
     renderMap(items);
     renderList(items);
     // 如果有匯出按鈕，設定事件處理器

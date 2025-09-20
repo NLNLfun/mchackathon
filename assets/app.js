@@ -22,7 +22,10 @@
       const seeds = [
         { title: '東區消防警報', description: '住宅火警，請避開周邊道路', type: 'fire', severity: 'high', status: 'VerifiedWarned', lat: 24.7906, lng: 120.9975, likes: 23 },
         { title: '光復路車禍', description: '兩車追撞，外側車道回堵', type: 'traffic', severity: 'medium', status: 'Accepted', lat: 24.8021, lng: 120.9890, likes: 8 },
-        { title: '暴雨積水', description: '道路積水嚴重，請繞道通行', type: 'disaster', severity: 'high', status: 'VerifiedWarned', lat: 24.8150, lng: 120.9670, likes: 15 }
+        { title: '暴雨積水', description: '道路積水嚴重，請繞道通行', type: 'disaster', severity: 'high', status: 'VerifiedWarned', lat: 24.8150, lng: 120.9670, likes: 15 },
+        { title: '清大路口車禍', description: '機車與汽車擦撞，已處理完畢', type: 'traffic', severity: 'low', status: 'Resolved', lat: 24.7950, lng: 120.9950, likes: 5 },
+        { title: '路燈故障', description: '民生路路燈故障，已修復', type: 'other', severity: 'low', status: 'Resolved', lat: 24.8080, lng: 120.9800, likes: 3 },
+        { title: '路面坑洞', description: '中正路路面坑洞，已填補', type: 'other', severity: 'medium', status: 'Resolved', lat: 24.8000, lng: 120.9700, likes: 7 }
       ];
       const now = toTs();
       const saved = seeds.map(s => ({

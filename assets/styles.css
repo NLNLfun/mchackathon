@@ -502,7 +502,13 @@ button + button { margin-left: 8px; }
   }
   .toast{ pointer-events: auto; max-width: none; }
 
-  /* 手機置中標題（可留著） */
   .header{ justify-content: center; }
   .header .logo{ text-align: center; margin: 0 auto; font-weight: 700; }
+
+  .img-nav {
+    display: none !important;
+  }
+  .img-counter {
+    display: none !important;
+  }
 }

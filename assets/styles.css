@@ -327,3 +327,89 @@ button + button { margin-left: 8px; }
 
 .muted { font-size: 12px; color: #6b7280; }
 
+.leaflet-popup-content .popup-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+}
+.btn.small{ padding:6px 10px; font-size:12px; }
+.photos-btn{ border-color:#d1d5db; }
+
+/* ---- Image modal (查看相片) ---- */
+.img-modal{
+  position: fixed;
+  inset: 0;
+  display: none;              
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;              
+}
+.img-modal.open{ display: flex; }
+
+.img-modal-backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+}
+
+.img-modal-body{
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(20,20,20,0.85);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.img-view{
+  display: block;
+  max-width: 92vw;
+  max-height: vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.img-close{
+  position: absolute;
+  top: 6px; right: 6px;
+  border: 0;
+  background: rgba(255,255,255,0.9);
+  border-radius: 999px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.img-nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: rgba(255,255,255,0.9);
+  width: 36px; height: 48px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 22px;
+}
+.img-nav.prev{ left: -48px; }
+.img-nav.next{ right: -48px; }
+
+.img-counter{
+  position: absolute;
+  right: 10px; bottom: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0,0,0,0.45);
+  border-radius: 999px;
+}
+
+.leaflet-popup-content .popup-footer{
+  display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:8px;
+}
+.btn.small{ padding:6px 10px; font-size:12px; }
+.photos-btn{ border-color:#d1d5db; }

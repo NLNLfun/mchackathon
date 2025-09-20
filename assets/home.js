@@ -23,6 +23,56 @@
     btnMenu: document.getElementById('btnMenu')
   };
 
+  const imgModal = document.createElement('div');
+  imgModal.className = 'img-modal';
+  imgModal.innerHTML = `
+    <div class="img-modal-backdrop"></div>
+    <div class="img-modal-body">
+      <button class="img-close">✕</button>
+      <img class="img-view" alt="photo" />
+      <button class="img-nav prev">‹</button>
+      <button class="img-nav next">›</button>
+      <div class="img-counter"></div>
+    </div>
+  `;
+  document.body.appendChild(imgModal);
+
+  const imgEl = imgModal.querySelector('.img-view');
+  const btnClose = imgModal.querySelector('.img-close');
+  const btnPrev = imgModal.querySelector('.img-nav.prev');
+  const btnNext = imgModal.querySelector('.img-nav.next');
+  const counterEl = imgModal.querySelector('.img-counter');
+  let gallery = []; // 直接放 dataURL 陣列
+  let idx = 0;
+
+  function showIdx(i){
+    if(!gallery.length) return;
+    idx = (i + gallery.length) % gallery.length;
+    imgEl.src = gallery[idx];
+    counterEl.textContent = `${idx + 1} / ${gallery.length}`;
+  }
+  function openGallery(arr){
+    gallery = Array.isArray(arr) ? arr.filter(Boolean) : [];
+    if(!gallery.length) return;
+    showIdx(0);
+    imgModal.classList.add('open');
+  }
+  function closeGallery(){
+    imgModal.classList.remove('open');
+    gallery = [];
+  }
+
+  btnClose.onclick = closeGallery;
+  imgModal.querySelector('.img-modal-backdrop').onclick = closeGallery;
+  btnPrev.onclick = () => showIdx(idx - 1);
+  btnNext.onclick = () => showIdx(idx + 1);
+  document.addEventListener('keydown', (e) => {
+    if(!imgModal.classList.contains('open')) return;
+    if(e.key === 'Escape') closeGallery();
+    if(e.key === 'ArrowLeft') showIdx(idx - 1);
+    if(e.key === 'ArrowRight') showIdx(idx + 1);
+  });
+
   function openDrawer(){ els.drawer.classList.add('open'); }
   function closeDrawer(){ els.drawer.classList.remove('open'); }
   els.btnMenu.addEventListener('click', () => openDrawer());
@@ -31,30 +81,41 @@
   function popupHtml(inc){
     const actions = [];
     if(inc.type === 'fire'){
-      actions.push(`<button data-act="evac" class=\"btn\">避難原則</button>`);
+      actions.push(`<button data-act="evac" class="btn">避難原則</button>`);
     } else if(inc.type === 'traffic'){
-      actions.push(`<button data-act="reroute" class=\"btn\">改道路線</button>`);
+      actions.push(`<button data-act="reroute" class="btn">改道路線</button>`);
     } else if(inc.type === 'disaster'){
-      actions.push(`<button data-act="disaster" class=\"btn\">天災應對</button>`);
+      actions.push(`<button data-act="disaster" class="btn">天災應對</button>`);
     } else {
-      actions.push(`<button data-act="other" class=\"btn\">相關建議</button>`);
+      actions.push(`<button data-act="other" class="btn">相關建議</button>`);
     }
-    actions.push(`<button data-act="like" class=\"btn\" style=\"background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}\">👍 ${inc.likes || 0}</button>`);
+    actions.push(
+      `<button data-act="like" class="btn" style="background:${App.severityColor(inc.severity)};color:#fff;border-color:${App.severityColor(inc.severity)}">👍 ${inc.likes || 0}</button>`
+    );
+
+    // 有照片才顯示
+    const photosBtn = (inc.photos && inc.photos.length)
+      ? `<button data-act="photos" class="btn ghost small photos-btn">📷 查看相片 (${inc.photos.length})</button>`
+      : '';
+
     return `
-    <div style="min-width:220px">
-      <b>${inc.title}</b><br>
-      <div class="pills">
-        <span class="badge cat-${inc.type}">${App.typeLabel(inc.type)}</span>
-        <span class="badge sev-${inc.severity.toUpperCase()}">${inc.severity.toUpperCase()}</span>
-        <span class="badge status-${inc.status}">${App.statusLabel(inc.status)}</span>
-      </div>
-      <div style="margin-top:6px">${inc.description || ''}</div>
-      <div class="muted" style="margin-top:6px">
-        回報時間：${new Date(inc.createdAt || inc.updatedAt).toLocaleString()}
-      </div>
-      <div class="actions" style="margin-top:8px">${actions.join(' ')}</div>
-    </div>`;
-  }
+      <div style="min-width:220px">
+        <b>${inc.title}</b><br>
+        <div class="pills">
+          <span class="badge cat-${inc.type}">${App.typeLabel(inc.type)}</span>
+          <span class="badge sev-${inc.severity.toUpperCase()}">${inc.severity.toUpperCase()}</span>
+          <span class="badge status-${inc.status}">${App.statusLabel(inc.status)}</span>
+        </div>
+        <div style="margin-top:6px">${inc.description || ''}</div>
+        <div class="muted" style="margin-top:6px">
+          回報時間：${new Date(inc.createdAt || inc.updatedAt).toLocaleString()}
+        </div>
+        <div class="popup-footer">
+          <div class="actions">${actions.join(' ')}</div>
+          ${photosBtn}
+        </div>
+      </div>`;
+}
 
   function attachPopupActions(container, inc){
     const evac = container.querySelector('[data-act="evac"]');
@@ -67,6 +128,13 @@
     if(other){ other.addEventListener('click', (e) => { e.stopPropagation(); alert('相關建議：請注意安全，可撥打 1999 市民專線通報相關問題。'); }); }
     const like = container.querySelector('[data-act="like"]');
     if(like){ like.addEventListener('click', (e) => { e.stopPropagation(); const updated = App.likeIncident(inc.id); if(updated){ like.textContent = `👍 ${updated.likes}`; refresh(); } }); }
+    const photosBtn = container.querySelector('[data-act="photos"]');
+    if (photosBtn && inc.photos && inc.photos.length) {
+      photosBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openGallery(inc.photos);
+      });
+    }
   }
 
   function renderMarkers(data){

@@ -79,8 +79,42 @@
         }
       };
 
+      // Parse the Gemini Data
+      const savedLatest = JSON.parse(localStorage.getItem('latestIncident') || '{}');
+      let geminiData = {};
+      console.log(`${inc.id} and ${savedLatest.incidentId}`)
+      console.log("Data:", savedLatest);
+      if(inc.id == savedLatest.incidentId){
+        const rawText = savedLatest?.data?.content?.parts?.[0]?.text || "";
+        const cleanText = rawText.replace(/```json|```/g, "").trim();
+        try {
+          geminiData = JSON.parse(cleanText);
+        } catch (err) {
+          console.error("Failed to parse gemini JSON:", err, cleanText);
+        }
+      }
+
       const tdType = document.createElement('td'); tdType.textContent = App.typeLabel(inc.type); tr.appendChild(tdType);
+      
+      const tdMatch = document.createElement('td');
+      if (geminiData && geminiData.match !== undefined && geminiData.match !== null) {
+        tdMatch.textContent = `${geminiData.match}%`;
+        tdMatch.style.color = 'green';
+      } else {
+        tdMatch.textContent = "not reviewed";
+      }
+      tr.appendChild(tdMatch);
+
       const tdSev = document.createElement('td'); tdSev.textContent = inc.severity.toUpperCase(); tr.appendChild(tdSev);
+      if(geminiData?.severity_score){
+        const note = document.createElement('div');
+        note.style.fontSize = '0.9em';
+        note.style.fontWeight = 'bold'
+        note.style.color = '	#2E8B57';
+        note.textContent = geminiData.severity_score;
+        tdSev.appendChild(note);
+      }
+
       const tdStatus = document.createElement('td'); 
       const statusSpan = document.createElement('span');
       statusSpan.textContent = App.statusLabel(inc.status);
@@ -92,6 +126,14 @@
       const inp = document.createElement('input'); inp.type = 'text'; inp.value = inc.assignedAgency || ''; inp.placeholder = '例如：消防局第二大隊';
       inp.onchange = () => { App.upsertIncident({ id: inc.id, assignedAgency: inp.value }); render(); };
       tdAssign.appendChild(inp); tr.appendChild(tdAssign);
+      if(geminiData?.suggested_department){
+        const note = document.createElement('div');
+        note.style.fontSize = '0.75em';
+        note.style.color = '	#2E8B57';
+        note.textContent = `建議單位: ${geminiData.suggested_department}`;
+        tdAssign.appendChild(note);
+      }
+
 
       const tdAct = document.createElement('td');
       const select = document.createElement('select');

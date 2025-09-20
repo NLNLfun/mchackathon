@@ -142,7 +142,7 @@
       location: { lat: selectedLatLng.lat, lng: selectedLatLng.lng, address: '' },
       assignedAgency: '',
       source: 'public',
-      photos: photoDataUrls
+      photos: photoDataUrls.length > 0 ? photoDataUrls : [] 
     };
 
     try {
@@ -155,6 +155,16 @@
         body: JSON.stringify(incident) 
       });
       console.log('Passed data to n8n.');
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Failed: ${res.status} ${errText}`);
+      }
+
+      const data = await res.json(); // Gemini AI response
+      console.log("Gemini response:", data);
+
+      localStorage.setItem('latestIncident', JSON.stringify({data, incidentId: saved.id}));
 
       alert('已送出通報，案件編號：' + saved.id + '\n將跳轉至審核頁面');
       window.location.href = 'admin.html';

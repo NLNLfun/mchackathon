@@ -156,7 +156,7 @@
   function getIncidents(){ return readArray(STORAGE.incidents); }
   function saveIncidents(list){ writeArray(STORAGE.incidents, list); }
 
-  function upsertIncident(incident){
+ function upsertIncident(incident){
     const list = getIncidents();
     const idx = list.findIndex(i => i.id === incident.id);
     if(idx >= 0){ list[idx] = { ...list[idx], ...incident, updatedAt: toTs() }; }
@@ -164,6 +164,7 @@
     saveIncidents(list);
     const saved = idx >= 0 ? list[idx] : list[0];
     if(!incident.id){ addNotification(saved, `已接收您的通報（${typeLabel(saved.type)}）`, 'info'); }
+
     return saved;
   }
 

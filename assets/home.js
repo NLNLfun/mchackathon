@@ -64,17 +64,25 @@
     markerClusterGroup.clearLayers();
     markers.clear();
     
+    // 檢查是否有需要高亮的事故
+    const highlightIncidentId = sessionStorage.getItem('highlightIncidentId');
+    if(highlightIncidentId){
+      console.log('首頁載入，需要高亮的事故ID:', highlightIncidentId);
+    }
+    
     data.forEach(inc => {
       const color = App.severityColor(inc.severity);
       const emoji = App.typeEmoji(inc.type);
-      // 根據嚴重度設定外框顏色
-      let borderColor = '#fff'; // 低嚴重度：白色
-      if(inc.severity === 'medium') borderColor = '#f59e0b'; // 中嚴重度：橙色
-      else if(inc.severity === 'high') borderColor = '#dc2626'; // 高嚴重度：紅色
+      // 所有嚴重度都使用白色外框
+      const borderColor = '#fff';
+      
+      // 如果是需要高亮的事故，使用特殊樣式
+      const isHighlighted = highlightIncidentId === inc.id;
+      const highlightStyle = isHighlighted ? 'border:5px solid #ff6b6b;box-shadow:0 0 20px rgba(255,107,107,0.8);' : '';
       
       const marker = L.marker([inc.location.lat, inc.location.lng], {
         icon: L.divIcon({
-          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid ${borderColor};box-shadow:0 2px 8px rgba(0,0,0,0.3);">${emoji}</div>`,
+          html: `<div style="font-size:24px;line-height:1;text-align:center;text-shadow:1px 1px 3px rgba(0,0,0,0.7);background:${color};border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:3px solid ${borderColor};box-shadow:0 2px 8px rgba(0,0,0,0.3);${highlightStyle}">${emoji}</div>`,
           className: 'custom-marker',
           iconSize: [36, 36],
           iconAnchor: [18, 18]
@@ -90,13 +98,41 @@
       // 添加到群組而不是直接添加到地圖
       markerClusterGroup.addLayer(marker);
       markers.set(inc.id, marker);
+      
+      // 如果是需要高亮的事故，自動打開彈窗並縮放到該位置
+      if(isHighlighted){
+        console.log('高亮事故:', inc.title, '位置:', inc.location);
+        setTimeout(() => {
+          map.setView([inc.location.lat, inc.location.lng], 16);
+          // 監聽地圖移動完成事件
+          map.once('moveend', () => {
+            setTimeout(() => {
+              console.log('嘗試打開彈窗:', inc.title);
+              marker.openPopup();
+              // 清除高亮標記
+              sessionStorage.removeItem('highlightIncidentId');
+            }, 300);
+          });
+        }, 500);
+      }
     });
   }
 
   function renderList(data){
     els.list.innerHTML = '';
+    
+    // 檢查是否有需要高亮的事故
+    const highlightIncidentId = sessionStorage.getItem('highlightIncidentId');
+    
     data.forEach(inc => {
       const li = document.createElement('li');
+      
+      // 如果是需要高亮的事故，添加特殊樣式
+      const isHighlighted = highlightIncidentId === inc.id;
+      if(isHighlighted){
+        li.style.cssText = 'background: #fff3cd; border-left: 4px solid #ff6b6b; border-radius: 4px; margin: 2px 0;';
+      }
+      
       li.innerHTML = `
         <div class="title">${inc.title}</div>
         <div class="meta">

@@ -16,11 +16,21 @@
       <a href="report.html">通報</a>
       <a href="subscribe.html">訂閱</a>
       <a href="history.html">歷史紀錄</a>
+      <a class="active" href="notifications.html">通知中心</a>
       <a href="admin.html">管理審核</a>
     </div>
   </div>
   <div class="container">
     <div class="sidebar">
+      <div class="section">
+        <h3>通知說明</h3>
+        <div class="helper">
+          <strong>通知邏輯：</strong><br>
+          • <strong>高嚴重度事故</strong>：自動通知所有使用者<br>
+          • <strong>中/低嚴重度事故</strong>：只通知有訂閱該區域的使用者<br>
+          • 只有經過官方確認的事故才會發送警告通知
+        </div>
+      </div>
       <div class="section">
         <h3>通知設定</h3>
         <div class="form-row">
@@ -37,12 +47,13 @@
         </div>
         <div class="form-row">
           <div>
-            <label>通知優先級</label>
-            <select id="minPriority">
+            <label>訂閱通知嚴重度</label>
+            <select id="minSeverity">
               <option value="low">全部通知</option>
-              <option value="medium" selected>中優先級以上</option>
-              <option value="high">僅高優先級</option>
+              <option value="medium" selected>中嚴重度以上</option>
+              <option value="high">僅高嚴重度</option>
             </select>
+            <div class="helper">注意：高嚴重度事故會自動通知所有使用者</div>
           </div>
         </div>
         <div class="form-row">
@@ -68,8 +79,17 @@
         <div class="notification-filters">
           <button id="btnAll" class="filter-btn active">全部</button>
           <button id="btnUnread" class="filter-btn">未讀</button>
-          <button id="btnHigh" class="filter-btn">高優先級</button>
+          <button id="btnHigh" class="filter-btn">高嚴重度</button>
           <button id="btnWarn" class="filter-btn">警告</button>
+        </div>
+        <div class="notification-sort">
+          <label>排序方式：</label>
+          <select id="sortBy">
+            <option value="time-desc">時間（新到舊）</option>
+            <option value="time-asc">時間（舊到新）</option>
+            <option value="severity-desc">嚴重度（高到低）</option>
+            <option value="severity-asc">嚴重度（低到高）</option>
+          </select>
         </div>
         <div class="notification-list" id="notificationList">
           <!-- 通知列表將在這裡動態生成 -->

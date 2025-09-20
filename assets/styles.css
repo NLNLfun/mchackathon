@@ -118,6 +118,30 @@ button + button { margin-left: 8px; }
   background: #0b70ff; 
 }
 
+.notification-sort { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  padding: 8px; 
+  background: #f8f9fa; 
+  border-radius: 6px; 
+  border: 1px solid #e9ecef; 
+}
+.notification-sort label { 
+  font-size: 13px; 
+  font-weight: 600; 
+  color: #495057; 
+}
+.notification-sort select { 
+  padding: 4px 8px; 
+  border: 1px solid #ced4da; 
+  border-radius: 4px; 
+  font-size: 12px; 
+  background: #fff; 
+  cursor: pointer; 
+}
+
 .notification-list { 
   max-height: 60vh; 
   overflow-y: auto; 
@@ -138,7 +162,7 @@ button + button { margin-left: 8px; }
   border-left: 4px solid #0b70ff; 
   background: #f8faff; 
 }
-.notification-item.priority-high { 
+.notification-item.severity-high { 
   border-left-color: #dc2626; 
 }
 .notification-item:hover { 
@@ -169,6 +193,16 @@ button + button { margin-left: 8px; }
   color: #666; 
   margin-bottom: 8px; 
   line-height: 1.4; 
+}
+.notification-hint { 
+  font-size: 11px; 
+  color: #0b70ff; 
+  margin-bottom: 8px; 
+  font-style: italic; 
+  background: #f0f4ff; 
+  padding: 4px 8px; 
+  border-radius: 4px; 
+  border-left: 3px solid #0b70ff; 
 }
 .notification-actions { 
   display: flex; 

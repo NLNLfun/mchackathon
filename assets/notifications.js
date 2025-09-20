@@ -2,7 +2,7 @@
   const els = {
     enablePush: document.getElementById('enablePush'),
     enableSound: document.getElementById('enableSound'),
-    minPriority: document.getElementById('minPriority'),
+    minSeverity: document.getElementById('minSeverity'),
     typeFire: document.getElementById('type-fire'),
     typeTraffic: document.getElementById('type-traffic'),
     typeDisaster: document.getElementById('type-disaster'),
@@ -13,6 +13,7 @@
     btnUnread: document.getElementById('btnUnread'),
     btnHigh: document.getElementById('btnHigh'),
     btnWarn: document.getElementById('btnWarn'),
+    sortBy: document.getElementById('sortBy'),
     notificationList: document.getElementById('notificationList')
   };
 
@@ -24,7 +25,7 @@
     const defaultSettings = {
       enablePush: true,
       enableSound: true,
-      minPriority: 'medium',
+      minSeverity: 'medium',
       types: ['fire', 'traffic', 'disaster', 'other']
     };
     const saved = localStorage.getItem('notificationSettings');
@@ -36,7 +37,7 @@
     const settings = {
       enablePush: els.enablePush.checked,
       enableSound: els.enableSound.checked,
-      minPriority: els.minPriority.value,
+      minSeverity: els.minSeverity.value,
       types: []
     };
     
@@ -54,7 +55,7 @@
   function loadSettingsToUI(){
     els.enablePush.checked = notificationSettings.enablePush;
     els.enableSound.checked = notificationSettings.enableSound;
-    els.minPriority.value = notificationSettings.minPriority;
+    els.minSeverity.value = notificationSettings.minSeverity;
     els.typeFire.checked = notificationSettings.types.includes('fire');
     els.typeTraffic.checked = notificationSettings.types.includes('traffic');
     els.typeDisaster.checked = notificationSettings.types.includes('disaster');
@@ -64,6 +65,19 @@
   // 渲染通知列表
   function renderNotifications(){
     const notifications = App.getNotifications();
+    
+    // 確保所有通知都有嚴重度信息（修復舊通知）
+    notifications.forEach(notification => {
+      if(!notification.severity && notification.incidentId){
+        // 嘗試從事故中獲取嚴重度
+        const incidents = App.getIncidents();
+        const incident = incidents.find(inc => inc.id === notification.incidentId);
+        if(incident){
+          notification.severity = incident.severity;
+        }
+      }
+    });
+    
     let filteredNotifications = notifications;
 
     // 根據篩選條件過濾
@@ -72,12 +86,27 @@
         filteredNotifications = notifications.filter(n => !n.read);
         break;
       case 'high':
-        filteredNotifications = notifications.filter(n => n.priority === 'high');
+        filteredNotifications = notifications.filter(n => {
+          // 即時獲取事故的最新嚴重度
+          let currentSeverity = n.severity;
+          if(n.incidentId){
+            const incidents = App.getIncidents();
+            const incident = incidents.find(inc => inc.id === n.incidentId);
+            if(incident){
+              currentSeverity = incident.severity;
+            }
+          }
+          return currentSeverity === 'high';
+        });
         break;
       case 'warn':
         filteredNotifications = notifications.filter(n => n.level === 'warn');
         break;
     }
+
+    // 排序通知
+    const sortBy = els.sortBy.value;
+    filteredNotifications = sortNotifications(filteredNotifications, sortBy);
 
     els.notificationList.innerHTML = '';
 
@@ -92,24 +121,85 @@
     });
   }
 
+  // 排序通知
+  function sortNotifications(notifications, sortBy){
+    return notifications.sort((a, b) => {
+      switch(sortBy){
+        case 'time-desc':
+          return b.createdAt - a.createdAt;
+        case 'time-asc':
+          return a.createdAt - b.createdAt;
+        case 'severity-desc':
+          const severityA = getCurrentSeverity(a);
+          const severityB = getCurrentSeverity(b);
+          return getSeverityOrder(severityB) - getSeverityOrder(severityA);
+        case 'severity-asc':
+          const severityA2 = getCurrentSeverity(a);
+          const severityB2 = getCurrentSeverity(b);
+          return getSeverityOrder(severityA2) - getSeverityOrder(severityB2);
+        default:
+          return b.createdAt - a.createdAt;
+      }
+    });
+  }
+
+  // 獲取通知的當前嚴重度
+  function getCurrentSeverity(notification){
+    if(notification.incidentId){
+      const incidents = App.getIncidents();
+      const incident = incidents.find(inc => inc.id === notification.incidentId);
+      if(incident){
+        return incident.severity;
+      }
+    }
+    return notification.severity;
+  }
+
+  // 獲取嚴重度順序
+  function getSeverityOrder(severity){
+    const order = { 'high': 3, 'medium': 2, 'low': 1 };
+    return order[severity] || 0;
+  }
+
+  // 調試函數：檢查通知資料
+  function debugNotifications(){
+    const notifications = App.getNotifications();
+    console.log('通知資料：', notifications);
+    notifications.forEach(n => {
+      const currentSeverity = getCurrentSeverity(n);
+      console.log(`通知 ${n.id}: 原始嚴重度=${n.severity}, 當前嚴重度=${currentSeverity}, 時間=${new Date(n.createdAt).toLocaleString()}`);
+    });
+  }
+
   // 創建通知元素
   function createNotificationElement(notification){
+    // 即時獲取事故的最新嚴重度
+    let currentSeverity = notification.severity;
+    if(notification.incidentId){
+      const incidents = App.getIncidents();
+      const incident = incidents.find(inc => inc.id === notification.incidentId);
+      if(incident){
+        currentSeverity = incident.severity;
+      }
+    }
+    
     const div = document.createElement('div');
-    div.className = `notification-item ${notification.read ? 'read' : 'unread'} priority-${notification.priority}`;
+    div.className = `notification-item ${notification.read ? 'read' : 'unread'} severity-${currentSeverity || 'unknown'}`;
     
     const timeAgo = getTimeAgo(notification.createdAt);
-    const priorityIcon = getPriorityIcon(notification.priority);
+    const severityIcon = getSeverityIcon(currentSeverity);
     const levelIcon = getLevelIcon(notification.level);
     
     div.innerHTML = `
       <div class="notification-header">
         <div class="notification-icons">
-          ${priorityIcon} ${levelIcon}
+          ${severityIcon} ${levelIcon}
         </div>
         <div class="notification-time">${timeAgo}</div>
       </div>
       <div class="notification-title">${notification.title}</div>
       <div class="notification-message">${notification.message}</div>
+      ${notification.incidentId ? '<div class="notification-hint">💡 點擊查看地圖位置</div>' : ''}
       <div class="notification-actions">
         ${!notification.read ? '<button class="mark-read-btn" data-id="' + notification.id + '">標記已讀</button>' : ''}
         <button class="delete-btn" data-id="${notification.id}">刪除</button>
@@ -132,11 +222,20 @@
       deleteNotification(notification.id);
     });
 
-    // 點擊通知標記為已讀
+    // 點擊通知標記為已讀或跳轉到首頁
     div.addEventListener('click', () => {
       if(!notification.read){
         App.markNotificationRead(notification.id);
         renderNotifications();
+      }
+      
+      // 如果有關聯的事故，跳轉到首頁並顯示該事故
+      if(notification.incidentId){
+        console.log('跳轉到首頁，事故ID:', notification.incidentId);
+        // 將事故ID存儲到sessionStorage，供首頁使用
+        sessionStorage.setItem('highlightIncidentId', notification.incidentId);
+        // 跳轉到首頁
+        window.location.href = 'index.html';
       }
     });
 
@@ -151,9 +250,9 @@
     renderNotifications();
   }
 
-  // 獲取優先級圖示
-  function getPriorityIcon(priority){
-    switch(priority){
+  // 獲取嚴重度圖示
+  function getSeverityIcon(severity){
+    switch(severity){
       case 'high': return '🔴';
       case 'medium': return '🟡';
       case 'low': return '🟢';
@@ -212,12 +311,30 @@
       renderNotifications();
     }
   });
+  
+  // 排序變更事件
+  els.sortBy.addEventListener('change', renderNotifications);
 
   // 初始化
   loadSettingsToUI();
   setupFilterButtons();
+  debugNotifications(); // 調試：檢查通知資料
   renderNotifications();
 
   // 定期更新通知列表
   setInterval(renderNotifications, 30000); // 每30秒更新一次
+  
+  // 監聽 localStorage 變更，即時更新通知列表
+  window.addEventListener('storage', (e) => {
+    if(e.key === 'incidents' || e.key === 'notifications'){
+      renderNotifications();
+    }
+  });
+  
+  // 監聽頁面可見性變更，當頁面重新可見時更新
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden){
+      renderNotifications();
+    }
+  });
 })();

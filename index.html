@@ -7,6 +7,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0b70ff">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" crossorigin="" />
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -17,6 +19,7 @@
       <a href="report.html">通報</a>
       <a href="subscribe.html">訂閱</a>
       <a href="history.html">歷史紀錄</a>
+      <a href="notifications.html">通知中心</a>
       <a href="admin.html">管理審核</a>
     </div>
   </div>
@@ -52,8 +55,8 @@
                 <option value="Reported">Reported</option>
                 <option value="Accepted">Accepted</option>
                 <option value="VerifiedWarned">Verified &amp; Warned</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Rejected">Rejected</option>
+                <!-- <option value="Resolved">Resolved</option>
+                <option value="Rejected">Rejected</option> -->
               </select>
             </div>
           </div>
@@ -76,6 +79,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" crossorigin=""></script>
   <script src="assets/app.js"></script>
   <script src="assets/home.js"></script>
   <script>if('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js')); } document.getElementById('btnInstall').addEventListener('click', () => App.showInstallPrompt());</script>

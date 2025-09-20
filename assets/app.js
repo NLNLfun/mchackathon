@@ -90,18 +90,47 @@
     return dist <= (subscription.radiusMeters || 0);
   }
 
-  function addNotification(incident, message, level){
+  function addNotification(incident, message, level, action = 'general'){
     const list = readArray(STORAGE.notifications);
-    list.unshift({
+    
+    // 檢查是否已存在相同的通知（去重機制）
+    const duplicateKey = incident ? `${incident.id}_${action}` : `system_${action}`;
+    const existingNotification = list.find(n => n.duplicateKey === duplicateKey);
+    
+    if(existingNotification){
+      // 如果存在重複通知，更新時間但不新增
+      existingNotification.createdAt = toTs();
+      existingNotification.read = false; // 重新標記為未讀
+      writeArray(STORAGE.notifications, list);
+      return existingNotification;
+    }
+    
+    const notification = {
       id: generateId('ntf'),
       incidentId: incident ? incident.id : null,
-      title: incident ? incident.title : '通知',
+      title: incident ? incident.title : '系統通知',
       message,
       level: level || 'info',
+      action: action,
+      duplicateKey: duplicateKey,
       createdAt: toTs(),
-      read: false
-    });
+      read: false,
+      priority: getNotificationPriority(level, incident),
+      severity: incident ? incident.severity : null
+    };
+    
+    list.unshift(notification);
     writeArray(STORAGE.notifications, list.slice(0, 100));
+    return notification;
+  }
+  
+  function getNotificationPriority(level, incident){
+    // 基於嚴重度決定通知優先級
+    if(incident && incident.severity === 'high') return 'high';
+    if(level === 'warn') return 'high';
+    if(incident && incident.severity === 'medium') return 'medium';
+    if(level === 'info') return 'medium';
+    return 'low';
   }
 
   function notifyForIncident(incident){
@@ -109,9 +138,6 @@
     if(incident.status !== 'VerifiedWarned'){
       return; // 未證實的事故不發送警告
     }
-    
-    const subs = readArray(STORAGE.subscriptions);
-    const matched = subs.filter(s => shouldNotifyForIncident(incident, s));
     
     let advice = '';
     if(incident.type === 'fire'){
@@ -125,9 +151,18 @@
     }
     const msg = `[${typeLabel(incident.type)}] ${incident.severity.toUpperCase()}｜${incident.description || ''} ${advice}`.trim();
     
-    // 如果有訂閱匹配，發送通知
+    // 情況1：高嚴重度事故 - 通知所有使用者
+    if(incident.severity === 'high'){
+      addNotification(incident, msg, 'warn', 'high_severity_alert');
+      return;
+    }
+    
+    // 情況2：中/低嚴重度事故 - 只通知有訂閱的使用者
+    const subs = readArray(STORAGE.subscriptions);
+    const matched = subs.filter(s => shouldNotifyForIncident(incident, s));
+    
     if(matched.length > 0){
-      addNotification(incident, msg, 'warn');
+      addNotification(incident, msg, 'warn', 'subscription_alert');
     }
   }
 

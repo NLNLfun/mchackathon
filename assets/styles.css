@@ -32,13 +32,13 @@ button.ghost { background: transparent; }
 button + button { margin-left: 8px; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; margin-right: 6px; }
-<<<<<<< HEAD
-.badge.status-Reported { background: #f0f4ff; border-color: #a9c1ff; }
-.badge.status-Accepted { background: #f5fff0; border-color: #bde8a1; }
-.badge.status-VerifiedWarned { background: #fff5db; border-color: #ffd38a; }
-.badge.status-Resolved { background: #eef9f0; border-color: #a6e0b1; }
-.badge.status-Rejected { background: #fdeeee; border-color: #f3a1a1; }
-=======
+.badge.sev-HIGH   { background:#dc2626; color:#fff; }
+.badge.sev-MEDIUM { background:#f59e0b; color:#fff; }
+.badge.sev-LOW    { background:#3b82f6; color:#fff; }
+.badge.cat-fire { background: #ef4444; color: #fff; }      
+.badge.cat-traffic { background: #3b82f6; color: #fff; }   
+.badge.cat-disaster { background: #9333ea; color: #fff; }  
+.badge.cat-other { background: #6b7280; color: #fff; }  
 .badge.status-Reported { background: #dc2626; color: #fff; border-color: #dc2626; font-weight: 700; }
 .badge.status-Accepted { background: #3b82f6; color: #fff; border-color: #3b82f6; font-weight: 600; }
 .badge.status-VerifiedWarned { background: #f59e0b; color: #fff; border-color: #f59e0b; font-weight: 700; }
@@ -99,3 +99,235 @@ button + button { margin-left: 8px; }
 .thumb-list { display:flex; gap:8px; flex-wrap: wrap; margin-top:6px; }
 
 .leaflet-container { font: inherit; }
+
+/* 通知系統樣式 */
+.notification-filters { 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  flex-wrap: wrap; 
+}
+.filter-btn { 
+  padding: 6px 12px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 20px; 
+  cursor: pointer; 
+  font-size: 12px; 
+  transition: all 0.2s; 
+}
+.filter-btn.active { 
+  background: #0b70ff; 
+  color: #fff; 
+  border-color: #0b70ff; 
+}
+.filter-btn:hover { 
+  background: #f0f4ff; 
+  border-color: #0b70ff; 
+}
+.filter-btn.active:hover { 
+  background: #0b70ff; 
+}
+
+.notification-sort { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  padding: 8px; 
+  background: #f8f9fa; 
+  border-radius: 6px; 
+  border: 1px solid #e9ecef; 
+}
+.notification-sort label { 
+  font-size: 13px; 
+  font-weight: 600; 
+  color: #495057; 
+}
+.notification-sort select { 
+  padding: 4px 8px; 
+  border: 1px solid #ced4da; 
+  border-radius: 4px; 
+  font-size: 12px; 
+  background: #fff; 
+  cursor: pointer; 
+}
+
+.notification-list { 
+  max-height: 60vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px; 
+}
+.notification-item { 
+  padding: 12px; 
+  border: 1px solid #eee; 
+  border-radius: 8px; 
+  margin-bottom: 8px; 
+  background: #fff; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+}
+.notification-item.unread { 
+  border-left: 4px solid #0b70ff; 
+  background: #f8faff; 
+}
+.notification-item.severity-high { 
+  border-left-color: #dc2626; 
+}
+.notification-item:hover { 
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+}
+.notification-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 4px; 
+}
+.notification-icons { 
+  display: flex; 
+  gap: 4px; 
+  font-size: 14px; 
+}
+.notification-time { 
+  font-size: 11px; 
+  color: #666; 
+}
+.notification-title { 
+  font-weight: 600; 
+  margin-bottom: 4px; 
+  color: #333; 
+}
+.notification-message { 
+  font-size: 13px; 
+  color: #666; 
+  margin-bottom: 8px; 
+  line-height: 1.4; 
+}
+.notification-hint { 
+  font-size: 11px; 
+  color: #0b70ff; 
+  margin-bottom: 8px; 
+  font-style: italic; 
+  background: #f0f4ff; 
+  padding: 4px 8px; 
+  border-radius: 4px; 
+  border-left: 3px solid #0b70ff; 
+}
+.notification-actions { 
+  display: flex; 
+  gap: 8px; 
+}
+.mark-read-btn, .delete-btn { 
+  padding: 4px 8px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 11px; 
+  transition: all 0.2s; 
+}
+.mark-read-btn { 
+  color: #0b70ff; 
+  border-color: #0b70ff; 
+}
+.mark-read-btn:hover { 
+  background: #0b70ff; 
+  color: #fff; 
+}
+.delete-btn { 
+  color: #dc2626; 
+  border-color: #dc2626; 
+}
+.delete-btn:hover { 
+  background: #dc2626; 
+  color: #fff; 
+}
+.empty-notification { 
+  text-align: center; 
+  color: #666; 
+  padding: 40px 20px; 
+  font-style: italic; 
+}
+
+/* 批量操作樣式 */
+.batch-controls { 
+  display: flex; 
+  gap: 8px; 
+  margin-bottom: 16px; 
+  padding: 12px; 
+  background: #f8faff; 
+  border-radius: 8px; 
+  border: 1px solid #e0e7ff; 
+}
+.batch-controls.hidden { 
+  display: none; 
+}
+.batch-info { 
+  flex: 1; 
+  font-size: 14px; 
+  color: #666; 
+  display: flex; 
+  align-items: center; 
+}
+.batch-actions { 
+  display: flex; 
+  gap: 8px; 
+}
+.batch-btn { 
+  padding: 6px 12px; 
+  border: 1px solid #ddd; 
+  background: #fff; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  font-size: 12px; 
+  transition: all 0.2s; 
+}
+.batch-btn.primary { 
+  background: #0b70ff; 
+  color: #fff; 
+  border-color: #0b70ff; 
+}
+.batch-btn:hover { 
+  background: #f0f4ff; 
+  border-color: #0b70ff; 
+}
+.batch-btn.primary:hover { 
+  background: #0b70ff; 
+}
+
+/* 審核歷史樣式 */
+.audit-log { 
+  max-height: 40vh; 
+  overflow-y: auto; 
+  border: 1px solid #e5e5e5; 
+  border-radius: 8px; 
+  padding: 8px; 
+  background: #fafafa; 
+}
+.audit-item { 
+  padding: 8px; 
+  border-bottom: 1px solid #eee; 
+  font-size: 12px; 
+}
+.audit-item:last-child { 
+  border-bottom: none; 
+}
+.audit-time { 
+  color: #666; 
+  font-weight: 600; 
+}
+.audit-action { 
+  color: #333; 
+  margin: 2px 0; 
+}
+.audit-details { 
+  color: #666; 
+  font-style: italic; 
+}
+
+.pills { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px; }
+
+.muted { font-size: 12px; color: #6b7280; }
+
